@@ -96,7 +96,7 @@ export default function HomePage() {
                 Username
               </label>
               <div className="relative">
-                <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-gray-900" />
+                <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
                 <input
                   value={loginData.username}
                   className="bg-primary-50 border border-primary-900 text-primary-900 rounded-md focus:outline-primary-900 block w-full p-2 font-semibold indent-8"
@@ -112,7 +112,7 @@ export default function HomePage() {
                 Password
               </label>
               <div className="relative">
-                <FaUnlockAlt className="absolute left-3 top-2.5 h-5 w-5 text-gray-900" />
+                <FaUnlockAlt className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
                 <input
                   type={isPasswordHidden ? "password" : "text"}
                   autoComplete="off"
@@ -128,15 +128,13 @@ export default function HomePage() {
                   placeholder="•••••••••"
                   required
                 />
-                <div className="realtive">
                   <div
-                    className="text-gray-900 absolute right-3 inset-y-3 my-auto
+                    className="text-primary-900 absolute right-3 inset-y-3 my-auto
                   active:text-gray-600"
                     onClick={handlePasswordHidden}
                   >
                     {isPasswordHidden ? <FaEye /> : <FaEyeSlash />}
                   </div>
-                </div>
               </div>
             </div>
             <Link href="/forgot" draggable="false">

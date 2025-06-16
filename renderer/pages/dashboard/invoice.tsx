@@ -74,6 +74,11 @@ const InvoicePage: NextPageWithLayout = () => {
 
     window.ipc.on("totalcountofinvoice", (res: APiRes) => {
       if (res.success) {
+        if (res.data === undefined) {
+          const invoiceno = `INV${(res.data + 1).toString().padStart(3, "0")}`;
+          setInvoiceNo(invoiceno);
+          return;
+        }
         const invoiceno = `INV${(res.data + 1).toString().padStart(3, "0")}`;
         setInvoiceNo(invoiceno);
       } else {
@@ -143,6 +148,7 @@ const InvoicePage: NextPageWithLayout = () => {
       toast.error("Add Atleast One Product!");
       return;
     }
+    console.log("due" + due);
 
     let invoiceData: finalInvoice = {
       // customer Details
@@ -166,15 +172,18 @@ const InvoicePage: NextPageWithLayout = () => {
       gstAmount: GSTAMT,
 
       // invoice Details,
+      invoiceNO: invoiceNo,
       grossAmount: grossAmt,
       totalAmount: totalAmt,
+      dueAmount: due,
 
       // payment details
       discount: paymentDetails.discount,
-      payments: {
-        paidAmount: paymentDetails.pay,
-        dueAmount: due,
-      },
+      payments: [
+        {
+          paidAmount: paymentDetails.pay,
+        },
+      ],
     };
 
     // set invoice Data in localStorage
@@ -185,6 +194,7 @@ const InvoicePage: NextPageWithLayout = () => {
     window.ipc.send("createinvoice", { invoiceData });
 
     window.ipc.on("createinvoice", (res: APiRes) => {
+      console.log(res);
       if (res.success) {
         toast.success(res.message);
         setTimeout(() => {

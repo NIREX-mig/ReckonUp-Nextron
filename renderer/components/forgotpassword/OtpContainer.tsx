@@ -14,7 +14,7 @@ const OtpContainer = ({ finalOtp, setFinalOtp, handleOtpSumbmit, loading }) => {
       <form onSubmit={handleOtpSumbmit} className="p-4 w-[27rem] mx-auto">
         <div className="mb-5">
           <div className="relative">
-            <TbPasswordUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-700" />
+            <TbPasswordUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
 
             <input
               type="text"

@@ -1,6 +1,6 @@
 appId: com.reckonUp.nextron
 productName: ReckonUp
-copyright: Copyright © 2024 NIreX
+copyright: Copyright © 2025 NIreX
 directories:
   output: dist
   buildResources: resources
@@ -9,4 +9,18 @@ files:
     filter:
       - package.json
       - app
-publish: { provider: github, owner: Nirex-mig, repo: reckonUp_nextron }
+publish:
+  provider: github
+  owner: Nirex-mig
+  repo: ReckonUp-Nextron
+  private: true
+# nsis : 
+#   oneClick: false
+#   allowElevation: true
+#   perMachine: true
+#   allowToChangeInstallationDirectory: true
+#   installerIcon: resources/icon.ico
+#   uninstallerIcon: resources/icon.ico
+#   createDesktopShortcut: true
+#   createStartMenuShortcut: true
+# afterSign : script/signHooks.js

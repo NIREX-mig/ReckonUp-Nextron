@@ -282,7 +282,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                         <div className="text-sm font-semibold">
                           <span>Paid Amount: </span>
                           <span className="capitalize">
-                            {`₹${invoiceData?.payments.reduce(
+                            {`₹${invoiceData?.payments?.reduce(
                               (sum, history) => sum + history.paidAmount,
                               0
                             )}`}

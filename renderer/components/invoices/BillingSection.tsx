@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const BillingSection = ({
   subtotal,
@@ -14,39 +14,46 @@ const BillingSection = ({
 }) => {
   return (
     <div className="flex justify-between">
-      <div className="h-[160px] rounded-xl border-[1px] border-[#f0f0f0] bg-white p-2">
-        <img src={qrSrc} alt="QR-code" className="w-[140px] h-[140px] object-contain" />
+      <div className="h-[100px] rounded-xl border-[1px] border-[#f0f0f0] bg-white p-1">
+        <img
+          src={qrSrc}
+          alt="QR-code"
+          className="w-[90px] h-[90px] object-contain"
+        />
       </div>
       <div className="w-[200px]">
         <div className="">
           <div className="mb-1 flex justify-between">
-            <span className="text-[15px]]">Subtotal:</span>
-            <span className="text-[15px]">{`₹ ${subtotal}`}</span>
+            <span className="text-[12px]]">Subtotal:</span>
+            <span className="text-[12px]">{`₹ ${subtotal}`}</span>
           </div>
           {gst && (
             <div className=" mb-1 flex justify-between">
-              <span className="text-[15px]">{`GST(${GstPercentage}%) :`}</span>
-              <span className="text-[15px]">{`₹ ${GSTAmount}`}</span>
+              <span className="text-[12px]">{`GST(${GstPercentage}%) :`}</span>
+              <span className="text-[12px]">{`₹ ${GSTAmount}`}</span>
             </div>
           )}
           {exchange && (
             <div className="mb-1 flex justify-between">
-              <span className="text-[15px]">{`Exchange Amt :`}</span>
-              <span className="text-[15px]">{`₹ ${exchangeAmount}`}</span>
+              <span className="text-[12px]">{`Exchange Amt :`}</span>
+              <span className="text-[12px]">{`₹ ${exchangeAmount}`}</span>
             </div>
           )}
           <div className="mb-1 flex justify-between border-t border-gray-500 ">
-            <span className="text-[15px]">Total:</span>
-            <span className="text-[15px]">{` ₹ ${totalAmount}`}</span>
+            <span className="text-[12px]">Total:</span>
+            <span className="text-[12px]">{` ₹ ${totalAmount}`}</span>
           </div>
 
           <div className=" mb-1 flex justify-between">
-            <span className="text-[15px]">Paid Amount :</span>
-            <span className="text-[15px]">{`₹ ${paidAmount}`}</span>
+            <span className="text-[12px]">Paid Amount :</span>
+            <span className="text-[12px]">{`₹ ${paidAmount?.reduce(
+              (sum, history) => sum + history.paidAmount,
+              0
+            )}`}</span>
           </div>
           <div className="md-1 flex justify-between">
-            <span className="text-[15px]">Discount :</span>
-            <span className="text-[15px]">{`₹ ${discount}`}</span>
+            <span className="text-[12px]">Discount :</span>
+            <span className="text-[12px]">{`₹ ${discount}`}</span>
           </div>
         </div>
       </div>

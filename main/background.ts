@@ -441,6 +441,7 @@ ipcMain.on("createinvoice", (event, args) => {
       discount,
       grossAmount,
       totalAmount,
+      dueAmount,
       products,
       payments,
     } = invoiceData;
@@ -451,8 +452,7 @@ ipcMain.on("createinvoice", (event, args) => {
       .get();
 
     let invoiceId: string = "INV" + String(row.count + 1).padStart(3, "0");
-    const paymentStatus: string =
-      payments.dueAmount === 0 ? "Full Paid" : "Due Amount";
+    const paymentStatus: string = dueAmount === 0 ? "Full Paid" : "Due Amount";
 
     // Insert invoice
     const invoiceStmt = dataDB.prepare(`
@@ -480,7 +480,7 @@ ipcMain.on("createinvoice", (event, args) => {
       discount,
       grossAmount,
       totalAmount,
-      payments.dueAmount,
+      dueAmount,
       paymentStatus
     );
 
@@ -511,7 +511,7 @@ ipcMain.on("createinvoice", (event, args) => {
       ) VALUES (?, ?)
     `);
 
-    paymentStmt.run(invoiceId, payments.paidAmount);
+    paymentStmt.run(invoiceId, payments[0].paidAmount);
 
     const response = new EventResponse(true, "Invoice Saved Successfully.", {
       invoiceId,
@@ -610,6 +610,13 @@ ipcMain.on("fetchbyinvoiceno", async (event, args) => {
         });
       }
     }
+    // Sort payments by createdAt (ascending) for each invoice
+    data.forEach((invoice) => {
+      invoice.payments.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+    });
 
     const finalData = {
       totalPages: 1,
@@ -873,6 +880,14 @@ ipcMain.on("fetchbydaterange", async (event, args) => {
         });
       }
     }
+
+    // Sort payments by createdAt (ascending) for each invoice
+    invoiceMap.forEach((invoice) => {
+      invoice.payments.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+    });
 
     const totalCount = dataDB
       .prepare(

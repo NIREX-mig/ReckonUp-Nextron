@@ -25,7 +25,7 @@ const NewPasswordContainer = ({ formData, setFormData, handleNewPasswordSubmit, 
             New Password
           </label>
           <div className="relative">
-            <FaUnlockAlt className="absolute left-3 top-2.5 h-5 w-5 text-primary-700" />
+            <FaUnlockAlt className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
             <input
               type="password"
               name="newpassword"

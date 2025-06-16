@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "reckonup",
-  "description": "ReckonUp-V1.0.0 - Jewellery Billing Software",
+  "description": "ReckonUp-V1.0.0 - Invoice Management Software",
   "version": "1.0.0",
   "author": "NIreX",
   "main": "app/background.js",
@@ -43,6 +43,7 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.4.0",
     "react-select": "^5.10.1",
+    "react-to-pdf": "^2.0.0",
     "react-to-print": "^3.1.0",
     "react-use-is-online": "^1.2.2",
     "sharp": "^0.33.5",

@@ -7,7 +7,7 @@ export interface APiRes {
 export interface ModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  type: 'invoice-detalils' | 'payment-status';
+  type: "invoice-detalils" | "payment-status";
 }
 
 export interface Product {
@@ -36,22 +36,23 @@ export interface ExchangeDetails {
 
 export interface Payment {
   paidAmount: number;
-  dueAmount: number;
 }
 
 export interface finalInvoice extends CustomerDetails, ExchangeDetails {
   // product Details
   products: Product[];
-  payments: Payment;
+  payments: Payment[];
 
   // gst Details
   gst: string;
   gstPercentage: number;
   gstAmount: number;
   discount: number;
+  dueAmount: number;
 
   // invoice Details
   grossAmount: number;
   totalAmount: number;
   createdAt?: any;
+  invoiceNO: string;
 }

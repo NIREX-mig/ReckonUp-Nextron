@@ -1,24 +1,34 @@
-import Link from 'next/link';
-import React from 'react';
-import { FaRegUser } from 'react-icons/fa';
-import Button from '../ui/Button';
-import { AiOutlineLoading } from 'react-icons/ai';
+import Link from "next/link";
+import React from "react";
+import { FaRegUser } from "react-icons/fa";
+import Button from "../ui/Button";
+import { AiOutlineLoading } from "react-icons/ai";
 
-const ForgotContainer = ({ handleOnChange, username, handleUsernameSubmit, loading }) => {
+const ForgotContainer = ({
+  handleOnChange,
+  username,
+  handleUsernameSubmit,
+  loading,
+}) => {
   return (
     <div className="w-[30rem] bg-primary-50">
-      <h3 className="text-center font-bold text-4xl mb-4 text-primary-900">Forgot Password</h3>
+      <h3 className="text-center font-bold text-4xl mb-4 text-primary-900">
+        Forgot Password
+      </h3>
       <p className="text-center text-lg mb-5 text-primary-800">
         Provide Your Username To Reset Your Password!
       </p>
 
       <form onSubmit={handleUsernameSubmit} className="p-4 w-[27rem] mx-auto">
         <div className="mb-5">
-          <label htmlFor="username" className="block mb-2 text-sm font-semibold text-primary-900">
+          <label
+            htmlFor="username"
+            className="block mb-2 text-sm font-semibold text-primary-900"
+          >
             Username
           </label>
           <div className="relative">
-            <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-700" />
+            <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
             <input
               type="text"
               id="username"
@@ -28,6 +38,7 @@ const ForgotContainer = ({ handleOnChange, username, handleUsernameSubmit, loadi
               onChange={handleOnChange}
               className="bg-primary-100 border border-primary-900 text-primary-900 text-md rounded-md focus:outline-primary-900 block w-full p-2 font-semibold indent-8"
               placeholder="Username"
+              readOnly
               required
             />
           </div>
@@ -35,7 +46,7 @@ const ForgotContainer = ({ handleOnChange, username, handleUsernameSubmit, loadi
 
         <Button
           buttonType="submit"
-          title={loading ? 'Wait...' : 'Next'}
+          title={loading ? "Wait..." : "Next"}
           extraClass="font-semibold py-2"
           icon={<AiOutlineLoading size={20} />}
           loading={loading}
@@ -43,7 +54,7 @@ const ForgotContainer = ({ handleOnChange, username, handleUsernameSubmit, loadi
         />
       </form>
       <p className=" px-8 flex text-base font-bold text-primary-800">
-        Want Login in account{' '}
+        Want Login in account{" "}
         <Link
           href="/home"
           draggable="false"
