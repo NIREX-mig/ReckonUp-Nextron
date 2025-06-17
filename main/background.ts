@@ -729,7 +729,7 @@ ipcMain.on("fetchbycustomername", async (event, args) => {
           weight: row.productWeight,
           quantity: row.productQuantity,
           rate: row.productRate,
-          purity : row.productPurity,
+          purity: row.productPurity,
           amount: row.productAmount,
           makingCost: row.productMakingCost,
         });
@@ -871,7 +871,7 @@ ipcMain.on("fetchbydaterange", async (event, args) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
-          purity : row.productPurity,
+          purity: row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -994,7 +994,7 @@ ipcMain.on("fetchmonthlyinvoice", async (event) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
-          purity : row.productPurity,
+          purity: row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -1131,7 +1131,7 @@ ipcMain.on("getallinvoice", async (event, args) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
-          purity : row.productPurity,
+          purity: row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -1483,8 +1483,8 @@ ipcMain.on("createsetting", async (event, args) => {
 
     // Insert new setting if none exists
     const insertStmt = configDB.prepare(`
-      INSERT INTO settings (ownerName, mobileNo, whatsappNo, address, shopName, GSTNO, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO settings (ownerName, mobileNo, whatsappNo, address, shopName, GSTNO, invoicetype, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?,?, ?)
     `);
     insertStmt.run(
       ownerName,
@@ -1493,6 +1493,7 @@ ipcMain.on("createsetting", async (event, args) => {
       address,
       shopName,
       GSTNO,
+      "invoice2",
       new Date().toISOString()
     );
 
@@ -1510,7 +1511,7 @@ ipcMain.on("fetchsetting", async (event) => {
   try {
     // Fetch the first (and only) settings record
     const getSettingStmt = configDB.prepare("SELECT * FROM settings LIMIT 1");
-    const setting = getSettingStmt.get();
+    const setting: any = getSettingStmt.get();
 
     let newSetting = setting || {
       ownerName: "Not Available",
@@ -1518,6 +1519,7 @@ ipcMain.on("fetchsetting", async (event) => {
       whatsappNo: "Not Available",
       address: "Not Available",
       shopName: "Not Available",
+      invoicetype: "Not Available",
       GSTNO: "Not Available",
     };
 
@@ -1717,7 +1719,7 @@ ipcMain.on("export2excel", async (event, args) => {
       ProCategory: "p.category AS productCategory",
       ProQuantity: "p.quantity AS productQuantity",
       ProAmount: "p.amount AS productAmount",
-      ProPurity : "p.purity AS productPurity",
+      ProPurity: "p.purity AS productPurity",
       ProRate: "p.rate AS productRate",
       ProMaking: "p.makingCost AS productMakingCost",
       gstPercentage: "i.gstPercentage",
@@ -1784,7 +1786,7 @@ ipcMain.on("export2excel", async (event, args) => {
       ProCategory: "Product Category",
       ProQuantity: "Product Quantity",
       ProAmount: "Product Amount",
-      ProPurity : "Product Purity",
+      ProPurity: "Product Purity",
       ProRate: "Product Rate",
       ProMaking: "Product Making",
       gstPercentage: "GST(%)",
@@ -1874,6 +1876,62 @@ ipcMain.on("feedback", async (event, args) => {
     event.reply("feedback", err);
   }
 });
+
+ipcMain.on("setInvoiceType", (event, args) => {
+  try {
+    const { invoiceType } = args;
+
+    const setting: any = configDB
+      .prepare("SELECT * FROM settings LIMIT 1")
+      .get();
+
+    if (setting) {
+      configDB
+        .prepare("UPDATE settings SET invoicetype = ?")
+        .run(invoiceType);
+    } else {
+      configDB
+        .prepare("INSERT INTO settings (invoicetype) VALUES (?)")
+        .run(invoiceType);
+    }
+
+    event.reply(
+      "setInvoiceType",
+      new EventResponse(true, "success", null)
+    );
+  } catch (err) {
+    event.reply(
+      "setInvoiceType",
+      new EventResponse(false, "Failed to set invoice type", err.message)
+    );
+  }
+});
+
+ipcMain.on("getInvoiceType", (event) => {
+  try {
+    const setting: any = configDB
+      .prepare("SELECT * FROM settings LIMIT 1")
+      .get();
+
+    if (!setting) {
+      event.reply(
+        "getInvoiceType",
+        new EventResponse(false, "Failed to fetch invoice type", null)
+      );
+    } else {
+      event.reply(
+        "getInvoiceType",
+        new EventResponse(true, "success", setting.invoicetype)
+      );
+    }
+  } catch (err) {
+    event.reply(
+      "getInvoiceType",
+      new EventResponse(false, "Failed to fetch invoice type", err.message)
+    );
+  }
+});
+
 
 // -------------------------------------
 //     Setting Authentication Events

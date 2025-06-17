@@ -107,6 +107,9 @@ export default function ForgotPage() {
   if (isOffline) {
     return (
       <section className="w-full h-screen flex justify-center items-center">
+        <Head>
+          <title>ReckonUp - Devloped by NIreX</title>
+        </Head>
         <div className="flex flex-col justify-center items-center gap-10">
           <Image
             src="/NoInternet.gif"

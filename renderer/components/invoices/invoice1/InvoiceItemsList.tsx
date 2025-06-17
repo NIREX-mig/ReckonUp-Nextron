@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const InvoiceItemsList = ({ productList }) => {
   return (
@@ -10,6 +10,7 @@ const InvoiceItemsList = ({ productList }) => {
             <th className="text-center w-[12rem]">Product Name</th>
             <th className="text-center">Category</th>
             <th className="text-center">Weight (g)</th>
+            <th className="text-center">purity</th>
             <th className="text-center">Quantity</th>
             <th className="text-center">Rate</th>
             <th className="text-center">Making(%)</th>
@@ -24,6 +25,11 @@ const InvoiceItemsList = ({ productList }) => {
                 <td className="text-center">{product.name}</td>
                 <td className="text-center">{product.category}</td>
                 <td className="text-center">{product.weight}</td>
+                <td className="text-center">
+                  {product.purity === "" || product.purity === null
+                    ? "-"
+                    : product.purity}
+                </td>
                 <td className="text-center">{product.quantity}</td>
                 <td className="text-center">{product.rate}</td>
                 <td className="text-center">{product.makingCost}</td>

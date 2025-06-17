@@ -8,14 +8,10 @@ import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
 import { APiRes } from "../../types";
 import toast from "react-hot-toast";
-import InvoiceHeader from "../../components/invoices/InvoiceHeader";
-import InvoiceDetailsCards from "../../components/invoices/InvoiceDetailsCards";
-import InvoiceItemsList from "../../components/invoices/InvoiceItemsList";
-import BillingSection from "../../components/invoices/BillingSection";
-import InvoiceFooter from "../../components/invoices/InvoiceFooter";
 import generatePDF from "react-to-pdf";
 import Invoice2 from "../../components/invoices/invoice2";
 import html2pdf from "html2pdf.js";
+import Invoice1 from "../../components/invoices/invoice1";
 
 const ViewInvoicePage: NextPageWithLayout = () => {
   const [finalInvoiceData, setFinalInvoiceData] = useState(undefined);
@@ -57,6 +53,7 @@ const ViewInvoicePage: NextPageWithLayout = () => {
     const getsettingData = () => {
       window.ipc.send("fetchsetting", { finalInvoiceData });
       window.ipc.on("fetchsetting", (res: APiRes) => {
+        console.log(res)
         if (res.success) {
           setSetting(res.data);
         } else {
@@ -135,49 +132,23 @@ const ViewInvoicePage: NextPageWithLayout = () => {
           ref={contentRef}
           className="max-w-4xl mx-auto overflow-scroll bg-[#ffffff] p-5"
         >
-          {/* <div className="relative mx-auto max-w-[1200px]">
-            <InvoiceHeader
-              shopName={setting?.shopName}
-              address={setting?.address}
-              invoiceNo={finalInvoiceData?.invoiceNo}
-              date={finalInvoiceData?.createdAt}
-              logoSrc={logo}
-              whatsappNo={setting?.mobileNo}
-              mobileNo={setting?.whatsappNo}
+          {setting?.invoicetype === "invoice1" && (
+            <Invoice1
+              data={finalInvoiceData}
+              logo={logo}
+              qr={qr}
+              setting={setting}
             />
+          )}
 
-            <InvoiceDetailsCards
-              category={finalInvoiceData?.exchangeCategory}
-              percentage={finalInvoiceData?.exchangePercentage}
-              customername={finalInvoiceData?.name}
-              customeraddress={finalInvoiceData?.address}
-              customerphone={finalInvoiceData?.phone}
-              exchange={Boolean(finalInvoiceData?.exchange)}
+          {setting?.invoicetype === "invoice2" && (
+            <Invoice2
+              data={finalInvoiceData}
+              logo={logo}
+              qr={qr}
+              setting={setting}
             />
-
-            <InvoiceItemsList productList={finalInvoiceData?.products} />
-
-            <BillingSection
-              subtotal={finalInvoiceData?.grossAmount}
-              GSTAmount={finalInvoiceData?.gstAmount}
-              GstPercentage={finalInvoiceData?.gstPercentage}
-              discount={finalInvoiceData?.discount}
-              exchange={Boolean(finalInvoiceData?.exchange)}
-              exchangeAmount={finalInvoiceData?.exchangeAmount}
-              gst={Boolean(finalInvoiceData?.gst)}
-              paidAmount={finalInvoiceData?.payments}
-              qrSrc={qr}
-              totalAmount={finalInvoiceData?.totalAmount}
-            />
-
-            <InvoiceFooter />
-          </div> */}
-          <Invoice2
-            data={finalInvoiceData}
-            logo={logo}
-            qr={qr}
-            setting={setting}
-          />
+          )}
         </div>
       </div>
     </React.Fragment>

@@ -6,8 +6,8 @@ const Tabs = ({activeTab, setActiveTab}) => {
   const tabs = [
     { id: "general", label: "General" },
     { id: "export", label: "Export" },
-    { id: "profile", label: "Profile" },
-    { id: "settings", label: "Settings" },
+    { id: "passwords", label: "Passwords" },
+    { id: "invoice", label: "Invoice" },
     { id: "feedback", label: "Feedback" },
   ];
 

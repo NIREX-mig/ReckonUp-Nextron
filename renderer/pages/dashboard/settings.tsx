@@ -10,11 +10,12 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Tabs from "../../components/settings/Tabs";
 import ShopDetails from "../../components/settings/ShopDetails";
-import Profile from "../../components/settings/Profile";
-import SettingPassword from "../../components/settings/SettingPassword";
 import { APiRes } from "../../types";
 import { useIsOnline } from "react-use-is-online";
 import { AiOutlineLoading } from "react-icons/ai";
+import Passwords from "../../components/settings/Passwords";
+import InvoiceSetting from "../../components/settings/InvoiceSetting";
+import Image from "next/image";
 
 const SettingPage: NextPageWithLayout = () => {
   const { isOffline } = useIsOnline();
@@ -22,6 +23,7 @@ const SettingPage: NextPageWithLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [settingPassword, setSettingPassword] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [sendingOTP, setSendingOTP] = useState(false);
 
   const [activeTab, setActiveTab] = useState("general");
 
@@ -96,13 +98,15 @@ const SettingPage: NextPageWithLayout = () => {
       toast.error("Please Connect To The 🛜 Internet.");
       return;
     }
-
+    setSendingOTP(true);
     window.ipc.send("setting-forgot-email", {});
     window.ipc.on("setting-forgot-email", (res: APiRes) => {
       if (res.success) {
+        setSendingOTP(false);
         setOtpcontainer(true);
         toast.success(res.message);
       } else {
+        setSendingOTP(false);
         setOtpcontainer(false);
         toast.error(res.message);
       }
@@ -112,7 +116,10 @@ const SettingPage: NextPageWithLayout = () => {
   if (!isAuthenticated) {
     return (
       <div className=" p-1 bg-primary-50 overflow-auto rounded-xl m-2 flex flex-col items-center justify-center h-[calc(100%-16px)]">
-        {!otpContainer && (
+        <Head>
+          <title>ReckonUp - Devloped by NIreX</title>
+        </Head>
+        {!otpContainer && !sendingOTP && (
           <div className="border border-primary-950 rounded-md p-5 ">
             <div className="flex flex-col items-center gap-2">
               <h3 className="text-2xl font-bold text-primary-900">
@@ -240,6 +247,22 @@ const SettingPage: NextPageWithLayout = () => {
             </p>
           </div>
         )}
+        {sendingOTP && (
+          <div className="border  rounded-md p-5 ">
+            <Image
+              alt="paper Plane"
+              src="/paperPlane.gif"
+              width={500}
+              height={500}
+              className=""
+              draggable="false"
+              priority
+            />
+            <p className="text-center font-semibold text-xl">
+              Sending OTP To Developer Email.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
@@ -256,8 +279,8 @@ const SettingPage: NextPageWithLayout = () => {
         <div className="bg-primary-50 border-primary-500 border text-primary-900 rounded-lg p-6 h-[calc(100%-135px)] overflow-auto">
           {activeTab === "general" && <ShopDetails />}
           {activeTab === "export" && <ExportToExel />}
-          {activeTab === "profile" && <Profile />}
-          {activeTab === "settings" && <SettingPassword />}
+          {activeTab === "passwords" && <Passwords />}
+          {activeTab === "invoice" && <InvoiceSetting />}
           {activeTab === "feedback" && <FeedBack />}
         </div>
       </div>

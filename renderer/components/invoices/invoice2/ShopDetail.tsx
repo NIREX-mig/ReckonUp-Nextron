@@ -14,7 +14,7 @@ const ShopDetail = ({
           <img src={logoSrc} alt="Logo" className="h-[60px] w-[60px]" />
         </div>
         <div className="font-[Raleway]">
-          <h1 className="bg-gradient-to-r from-green-600 via-green-500 to-green-300 bg-[200%_auto] bg-clip-text text-[22px] mt-[2px] font-semibold  text-transparent">
+          <h1 className="bg-gradient-to-r from-green-600 via-green-500 to-green-300 bg-[200%_auto] bg-clip-text text-[22px] p-1 font-semibold  text-transparent">
             {shopName}
           </h1>
           <p className="text-[13px] mt-[2px] text-[#333]">{shopAddress}</p>

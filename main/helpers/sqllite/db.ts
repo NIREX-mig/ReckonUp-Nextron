@@ -47,6 +47,7 @@ try {
     CREATE TABLE IF NOT EXISTS settings (
       qrPath TEXT,
       GSTNO TEXT NOT NULL DEFAULT 'Not Available',
+      invoicetype TEXT NOT NULL,
       address TEXT NOT NULL DEFAULT 'Not Available',
       mobileNo TEXT NOT NULL DEFAULT 'Not Available',
       ownerName TEXT NOT NULL DEFAULT 'Not Available',

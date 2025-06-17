@@ -14,11 +14,11 @@ const BillingSection = ({
 }) => {
   return (
     <div className="flex justify-between">
-      <div className="h-[100px] rounded-xl border-[1px] border-[#f0f0f0] bg-white p-1">
+      <div className="h-[75px] rounded-xl border-[1px] border-[#f0f0f0] bg-white p-1">
         <img
           src={qrSrc}
           alt="QR-code"
-          className="w-[90px] h-[90px] object-contain"
+          className="w-[73px] h-[73px] object-contain"
         />
       </div>
       <div className="w-[200px]">
@@ -27,13 +27,13 @@ const BillingSection = ({
             <span className="text-[12px]]">Subtotal:</span>
             <span className="text-[12px]">{`₹ ${subtotal}`}</span>
           </div>
-          {gst && (
+          {gst === "true" && (
             <div className=" mb-1 flex justify-between">
               <span className="text-[12px]">{`GST(${GstPercentage}%) :`}</span>
               <span className="text-[12px]">{`₹ ${GSTAmount}`}</span>
             </div>
           )}
-          {exchange && (
+          {exchange === "true" && (
             <div className="mb-1 flex justify-between">
               <span className="text-[12px]">{`Exchange Amt :`}</span>
               <span className="text-[12px]">{`₹ ${exchangeAmount}`}</span>

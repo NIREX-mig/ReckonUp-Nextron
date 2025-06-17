@@ -9,6 +9,7 @@ const InvoiceHeader = ({
   logoSrc,
   mobileNo,
   whatsappNo,
+  GSTNo,
 }) => {
   return (
     <div className="relative mb-3 flex items-center justify-between font-[Raleway]">
@@ -21,6 +22,7 @@ const InvoiceHeader = ({
             {shopName}
           </h1>
           <p className="text-[12px]  text-[#333]">{address}</p>
+          <p className="text-[12px]  text-[#333]">GSTIN No : {GSTNo}</p>
           <p className="text-[12px] text-[#333]">
             {mobileNo} {whatsappNo}
           </p>
@@ -31,7 +33,9 @@ const InvoiceHeader = ({
           INVOICE
         </h2>
         <p className="text-[15px] font-bold">InvoiceNo# {invoiceNo}</p>
-        <p className="text-[13px]">Date : {moment(date).format("DD/MMM/YYYY")}</p>
+        <p className="text-[13px]">
+          Date : {moment(date).format("DD/MMM/YYYY")}
+        </p>
       </div>
     </div>
   );
