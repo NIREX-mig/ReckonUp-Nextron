@@ -45,6 +45,7 @@ const InvoicePage: NextPageWithLayout = () => {
 
   const [productDetails, setProductDetails] = useState<Product>({
     name: "",
+    purity: "",
     category: "gold",
     weight: 0,
     quantity: 0,
@@ -110,6 +111,7 @@ const InvoicePage: NextPageWithLayout = () => {
       weight: Number(weight),
       quantity: Number(quantity),
       rate: Number(rate),
+      purity : String(productDetails.purity),
       amount: Number(amount),
       makingCost: Number(productDetails.makingCost),
     };
@@ -123,6 +125,7 @@ const InvoicePage: NextPageWithLayout = () => {
       quantity: 0,
       name: "",
       weight: 0,
+      purity : "",
       category: "gold",
       makingCost: 0,
     });
@@ -148,7 +151,6 @@ const InvoicePage: NextPageWithLayout = () => {
       toast.error("Add Atleast One Product!");
       return;
     }
-    console.log("due" + due);
 
     let invoiceData: finalInvoice = {
       // customer Details
@@ -172,7 +174,7 @@ const InvoicePage: NextPageWithLayout = () => {
       gstAmount: GSTAMT,
 
       // invoice Details,
-      invoiceNO: invoiceNo,
+      invoiceNo: invoiceNo,
       grossAmount: grossAmt,
       totalAmount: totalAmt,
       dueAmount: due,
@@ -220,6 +222,7 @@ const InvoicePage: NextPageWithLayout = () => {
     });
     setProductDetails({
       name: "",
+      purity: "",
       category: "gold",
       weight: 0,
       rate: 0,
@@ -520,7 +523,7 @@ const InvoicePage: NextPageWithLayout = () => {
 
             {/* product rate and category and quintity  */}
             <form onSubmit={handleAddProduct}>
-              <div className="p-2">
+              <div className="p-1">
                 <div className="flex gap-4">
                   {/* product rate  */}
                   <Input
@@ -555,7 +558,7 @@ const InvoicePage: NextPageWithLayout = () => {
                           category: e.target.value,
                         }))
                       }
-                      className="bg-primary-50 font-medium border border-primary-800 text-primary-900 text-sm rounded-md focus:outline-primary-900 block p-1.5"
+                      className="bg-primary-100 font-medium border border-primary-800 text-primary-900 text-sm rounded-md focus:outline-primary-900 block p-1.5"
                     >
                       <option defaultValue="gold" className="font-medium">
                         gold
@@ -615,6 +618,23 @@ const InvoicePage: NextPageWithLayout = () => {
                   handleOnBlur={handleMakingCostBlur}
                 />
               </div>
+              {/* purity section  */}
+              <div className="flex">
+                <Input
+                  title="Purity"
+                  lableStyle="text-primary-800"
+                  otherStyle=""
+                  type="text"
+                  value={productDetails.purity}
+                  handleChangeText={(e) =>
+                    setProductDetails((prev) => ({
+                      ...prev,
+                      purity: e.target.value,
+                    }))
+                  }
+                  placeholder="Purity ( 22k, 23k, 916 )"
+                />
+              </div>
               <div>
                 {/* product weight  and add button  */}
                 <div className="flex justify-between">
@@ -636,10 +656,9 @@ const InvoicePage: NextPageWithLayout = () => {
                   />
 
                   {/* product add button  */}
-
                   <Button
                     buttonType="submit"
-                    extraClass="sm:w-auto px-8 py-2 flex gap-2"
+                    extraClass="sm:w-auto px-8 py-2 flex gap-2 "
                     icon={<MdDownloadDone size={20} />}
                     title="Add"
                   />

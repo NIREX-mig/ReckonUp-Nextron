@@ -1,4 +1,5 @@
 import React from "react";
+import numberToWords from "../../../constents/numbertoword";
 
 const TexAndAmounts = ({
   gst,
@@ -13,33 +14,35 @@ const TexAndAmounts = ({
 }) => {
   return (
     <div className="grid grid-cols-3 gap-2 mb-2">
-      {gst === "true" && (
-        <div className="col-span-1 border border-black">
-          <div className="font-bold text-center px-2 border-b border-black">
-            Tax Calculations
-          </div>
-          <div className="px-2 py-1 flex justify-between">
-            {/* <div>CGST @ Rate : (1.5%)</div> */}
-            <div>GST @ Rate : ({gstPercentage})</div>
-            <div>{gstAmount}</div>
-          </div>
-          {/* <div className="px-2 flex justify-between">
+      <div className="col-span-1 border border-black">
+        {gst === "true" && (
+          <div>
+            <div className="font-bold text-center px-2 border-b border-black">
+              Tax Calculations
+            </div>
+            <div className="px-2 py-1 flex justify-between">
+              {/* <div>CGST @ Rate : (1.5%)</div> */}
+              <div>GST @ Rate : ({gstPercentage})</div>
+              <div>{gstAmount}</div>
+            </div>
+            {/* <div className="px-2 flex justify-between">
           <div>SGST @ Rate : (1.5%)</div>
           <div>1681.305</div>
         </div> */}
-          <div className="px-2 flex justify-between font-semibold mt-1">
-            <div>Total GST (Tax Amount):</div>
-            <div>{gstAmount}</div>
+            <div className="px-2 flex justify-between font-semibold mt-1">
+              <div>Total GST (Tax Amount):</div>
+              <div>{gstAmount}</div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="border border-black">
         <div className="font-bold text-center px-2 border-b border-black">
           Amount in Words:
         </div>
-        <div className="italic mb-2">
-          One Lakh Fifteen Thousand Two Hundred Forty-Nine Rupees only
+        <div className="italic mb-2 px-2">
+          {numberToWords(totalAmount - discount)}
         </div>
       </div>
 

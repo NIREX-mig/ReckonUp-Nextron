@@ -12,6 +12,7 @@ export interface ModalProps {
 
 export interface Product {
   name: string;
+  purity: string;
   category: string;
   weight: number;
   quantity: number;
@@ -54,5 +55,5 @@ export interface finalInvoice extends CustomerDetails, ExchangeDetails {
   grossAmount: number;
   totalAmount: number;
   createdAt?: any;
-  invoiceNO: string;
+  invoiceNo: string;
 }

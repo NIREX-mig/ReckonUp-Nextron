@@ -56,10 +56,11 @@ const Invoice2 = ({ data, qr, logo, setting }) => {
             Customer Signature
           </div> */}
 
-          <div className="h-[62px] border-[1px] border-black">
-            <img src={qr} alt="QR-code" className="w-[60px] h-[60px]" />
+          <div className=" absolute h-[65px] border-[1px] border-black">
+            <img src={qr} alt="QR-code" className="w-[63px] h-[63px]" />
           </div>
-          <div className="text-center">
+          <div></div>
+          <div className="text-center text-gray-400">
             ___________________
             <br />
             Company Seal & Signature

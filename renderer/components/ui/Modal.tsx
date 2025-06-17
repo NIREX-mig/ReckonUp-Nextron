@@ -375,6 +375,12 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                             scope="col"
                             className="px-3 py-2 font-normal text-sm w-[8rem] text-left rtl:text-right"
                           >
+                            Purity
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-3 py-2 font-normal text-sm w-[8rem] text-left rtl:text-right"
+                          >
                             Quantity
                           </th>
                           <th
@@ -403,6 +409,9 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                               </td>
                               <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
                                 {product?.weight}
+                              </td>
+                              <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
+                                {product?.purity}
                               </td>
                               <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
                                 {product?.quantity}

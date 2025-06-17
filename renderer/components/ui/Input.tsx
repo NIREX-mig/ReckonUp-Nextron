@@ -54,7 +54,7 @@ const Input = ({
         className={`bg-primary-100 border border-primary-800 text-primary-900 text-sm font-semibold rounded-md focus:outline-primary-900 inline-block py-1.5 px-2 ${otherStyle}`}
         placeholder={placeholder}
         disabled={disabled}
-        required
+        required={title === "Purity" ? false : true}
       />
     </div>
   );

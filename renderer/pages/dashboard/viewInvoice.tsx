@@ -15,6 +15,7 @@ import BillingSection from "../../components/invoices/BillingSection";
 import InvoiceFooter from "../../components/invoices/InvoiceFooter";
 import generatePDF from "react-to-pdf";
 import Invoice2 from "../../components/invoices/invoice2";
+import html2pdf from "html2pdf.js";
 
 const ViewInvoicePage: NextPageWithLayout = () => {
   const [finalInvoiceData, setFinalInvoiceData] = useState(undefined);
@@ -35,9 +36,20 @@ const ViewInvoicePage: NextPageWithLayout = () => {
   };
 
   const handleSaveInvoice = () => {
-    generatePDF(contentRef, {
-      filename: `${finalInvoiceData?.invoiceNo}_${finalInvoiceData?.name}.pdf`,
-    });
+    toast.error("this feature is not available yet!");
+    // // const element = document.getElementById("invoice");
+    // const opt = {
+    //   margin: 0.5,
+    //   filename: `${finalInvoiceData?.invoiceNo}_${finalInvoiceData?.name}.pdf`,
+    //   image: { type: "jpeg", quality: 0.98 },
+    //   html2canvas: { scale: 2 },
+    //   jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    // };
+    // html2pdf().set(opt).from(contentRef).save();
+
+    // generatePDF(contentRef, {
+    //   filename: `${finalInvoiceData?.invoiceNo}_${finalInvoiceData?.name}.pdf`,
+    // });
     // generatePDF(contentRef, options);
   };
 
@@ -114,7 +126,7 @@ const ViewInvoicePage: NextPageWithLayout = () => {
               className="flex items-center gap-2 px-4 py-2 bg-btn/95 text-white rounded-lg hover:bg-btn active:scale-95 transition-all duration-300"
             >
               <FaCloudDownloadAlt className="h-5 w-5" />
-              Save
+              Download
             </button>
           </div>
         </div>

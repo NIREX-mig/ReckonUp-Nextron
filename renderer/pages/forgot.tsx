@@ -108,8 +108,17 @@ export default function ForgotPage() {
     return (
       <section className="w-full h-screen flex justify-center items-center">
         <div className="flex flex-col justify-center items-center gap-10">
-          <h1 className="text-red-500 text-3xl font-bold">
-            Please First Connect To The Internet
+          <Image
+            src="/NoInternet.gif"
+            alt="nointernetgif"
+            width={300}
+            height={300}
+            className=""
+            draggable="false"
+            priority
+          />
+          <h1 className="text-black text-2xl font-bold">
+            No Internet Connection Is Found. Check your Connection And Try Again
           </h1>
           <Link
             href="/home"

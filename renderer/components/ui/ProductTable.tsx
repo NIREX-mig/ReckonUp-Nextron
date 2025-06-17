@@ -1,6 +1,13 @@
-import React from 'react';
+import React from "react";
 
-const ProductTable = ({ productList, setProductList, grossAmt, setGrossAmt, setGSTAMT, gst }) => {
+const ProductTable = ({
+  productList,
+  setProductList,
+  grossAmt,
+  setGrossAmt,
+  setGSTAMT,
+  gst,
+}) => {
   const handleDeleteProduct = (index: number) => {
     if (index > -1) {
       let deletedObj = productList[index];
@@ -13,7 +20,9 @@ const ProductTable = ({ productList, setProductList, grossAmt, setGrossAmt, setG
       const gstInRupee = (newGrossAmt * gst) / 100;
       setGSTAMT(gstInRupee);
 
-      setProductList(productList.slice(0, index).concat(productList.slice(index + 1)));
+      setProductList(
+        productList.slice(0, index).concat(productList.slice(index + 1))
+      );
     }
   };
 
@@ -33,6 +42,9 @@ const ProductTable = ({ productList, setProductList, grossAmt, setGrossAmt, setG
             </th>
             <th scope="col" className="pl-3 py-2">
               Net Weight
+            </th>
+            <th scope="col" className="pl-3 py-2">
+              Purity
             </th>
             <th scope="col" className="pl-3 py-2">
               Quantity
@@ -55,12 +67,18 @@ const ProductTable = ({ productList, setProductList, grossAmt, setGrossAmt, setG
                 key={index}
                 className="bg-primary-100 text-primary-900 border-b border-primary-500 cursor-pointer"
               >
-                <th scope="row" className="pl-6 py-2 font-medium whitespace-nowrap capitalize">
+                <th
+                  scope="row"
+                  className="pl-6 py-2 font-medium whitespace-nowrap capitalize"
+                >
                   {product.name}
                 </th>
                 <td className="pl-4 py-2">{product.category}</td>
                 <td className="pl-4 py-2">{product.rate}</td>
                 <td className="pl-4 py-2">{product.weight}</td>
+                <td className="pl-4 py-2">
+                  {product.purity === "" ? "-" : product.purity}
+                </td>
                 <td className="pl-4 py-2">{product.quantity}</td>
                 <td className="pl-4 py-2">{product.makingCost}</td>
                 <td className="pl-3 py-2">{`₹ ${product.amount}`}</td>

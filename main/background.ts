@@ -488,8 +488,8 @@ ipcMain.on("createinvoice", (event, args) => {
     const productStmt = dataDB.prepare(`
       INSERT INTO products (
         invoiceId, name, category, weight,
-        quantity, rate, amount, makingCost
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        quantity, rate, amount, makingCost, purity
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     for (const prod of products) {
@@ -501,7 +501,8 @@ ipcMain.on("createinvoice", (event, args) => {
         prod.quantity,
         prod.rate,
         prod.amount,
-        prod.makingCost
+        prod.makingCost,
+        prod.purity
       );
     }
     // Insert payment
@@ -538,6 +539,7 @@ ipcMain.on("fetchbyinvoiceno", async (event, args) => {
       p.category AS productCategory,
       p.weight AS productWeight,
       p.quantity AS productQuantity,
+      p.purity AS productPurity,
       p.rate AS productRate,
       p.amount AS productAmount,
       p.makingCost AS productMakingCost,
@@ -597,6 +599,7 @@ ipcMain.on("fetchbyinvoiceno", async (event, args) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
+          purity: row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -666,6 +669,7 @@ ipcMain.on("fetchbycustomername", async (event, args) => {
         p.category AS productCategory,
         p.weight AS productWeight,
         p.quantity AS productQuantity,
+        p.purity AS productPurity,
         p.rate AS productRate,
         p.amount AS productAmount,
         p.makingCost AS productMakingCost,
@@ -725,6 +729,7 @@ ipcMain.on("fetchbycustomername", async (event, args) => {
           weight: row.productWeight,
           quantity: row.productQuantity,
           rate: row.productRate,
+          purity : row.productPurity,
           amount: row.productAmount,
           makingCost: row.productMakingCost,
         });
@@ -809,6 +814,7 @@ ipcMain.on("fetchbydaterange", async (event, args) => {
         p.quantity AS productQuantity,
         p.rate AS productRate,
         p.amount AS productAmount,
+        p.purity AS productPurity,
         p.makingCost AS productMakingCost,
         pay.id AS paymentId,
         pay.paidAmount,
@@ -865,6 +871,7 @@ ipcMain.on("fetchbydaterange", async (event, args) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
+          purity : row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -930,6 +937,7 @@ ipcMain.on("fetchmonthlyinvoice", async (event) => {
         p.quantity AS productQuantity,
         p.rate AS productRate,
         p.amount AS productAmount,
+        p.purity AS productPurity,
         p.makingCost AS productMakingCost,
         pay.id AS paymentId,
         pay.paidAmount,
@@ -986,6 +994,7 @@ ipcMain.on("fetchmonthlyinvoice", async (event) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
+          purity : row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -1060,6 +1069,7 @@ ipcMain.on("getallinvoice", async (event, args) => {
         p.quantity AS productQuantity,
         p.rate AS productRate,
         p.amount AS productAmount,
+        p.purity AS productPurity,
         p.makingCost AS productMakingCost,
         pay.id AS paymentId,
         pay.paidAmount,
@@ -1121,6 +1131,7 @@ ipcMain.on("getallinvoice", async (event, args) => {
           quantity: row.productQuantity,
           rate: row.productRate,
           amount: row.productAmount,
+          purity : row.productPurity,
           makingCost: row.productMakingCost,
         });
       }
@@ -1706,6 +1717,7 @@ ipcMain.on("export2excel", async (event, args) => {
       ProCategory: "p.category AS productCategory",
       ProQuantity: "p.quantity AS productQuantity",
       ProAmount: "p.amount AS productAmount",
+      ProPurity : "p.purity AS productPurity",
       ProRate: "p.rate AS productRate",
       ProMaking: "p.makingCost AS productMakingCost",
       gstPercentage: "i.gstPercentage",
@@ -1772,6 +1784,7 @@ ipcMain.on("export2excel", async (event, args) => {
       ProCategory: "Product Category",
       ProQuantity: "Product Quantity",
       ProAmount: "Product Amount",
+      ProPurity : "Product Purity",
       ProRate: "Product Rate",
       ProMaking: "Product Making",
       gstPercentage: "GST(%)",

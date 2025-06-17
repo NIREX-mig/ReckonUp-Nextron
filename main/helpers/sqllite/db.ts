@@ -97,6 +97,7 @@ try {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       invoiceId TEXT NOT NULL,
       name TEXT NOT NULL,
+      purity TEXT,
       category TEXT NOT NULL,
       weight REAL NOT NULL,
       quantity INTEGER NOT NULL,
