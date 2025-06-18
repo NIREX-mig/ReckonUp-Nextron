@@ -45,6 +45,7 @@ try {
   // Settings Table (configDB)
   configDB.exec(`
     CREATE TABLE IF NOT EXISTS settings (
+      id INTEGER,
       qrPath TEXT,
       GSTNO TEXT NOT NULL DEFAULT 'Not Available',
       invoicetype TEXT NOT NULL,
@@ -53,7 +54,8 @@ try {
       ownerName TEXT NOT NULL DEFAULT 'Not Available',
       whatsappNo TEXT NOT NULL DEFAULT 'Not Available',
       shopName TEXT NOT NULL DEFAULT 'Not Available',
-      logoPath TEXT
+      logoPath TEXT,
+      createdAt TEXT DEFAULT CURRENT_TIMESTAMP
     );
   `);
 

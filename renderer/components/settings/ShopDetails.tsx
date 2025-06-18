@@ -39,26 +39,37 @@ const ShopDetails = () => {
   };
 
   const handleFileChange = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
+    const file = e.target.files?.[0];
+
+    if (!file) {
       setlogo(undefined);
+      setLogoUploaded(false);
       return;
     }
-    setlogo(e.target.files[0]);
 
-    const Updatelogo = async (file) => {
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          window.ipc.send("upload-logo", {
-            fileName: file.name,
-            logo: reader.result,
-          });
-        };
-        reader.readAsDataURL(file);
+    setlogo(file);
+    updateLogo(file);
+  };
+
+  const updateLogo = (file) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.result) {
+        window.ipc.send("upload-logo", {
+          fileName: file.name,
+          logo: reader.result,
+        });
+        setLogoUploaded(true); // Only mark as uploaded after sending
       }
     };
-    Updatelogo(e.target.files[0]);
-    setLogoUploaded(true);
+
+    reader.onerror = () => {
+      console.error("Failed to read file for logo upload.");
+      setLogoUploaded(false);
+    };
+
+    reader.readAsDataURL(file);
   };
 
   useEffect(() => {

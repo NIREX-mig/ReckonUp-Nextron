@@ -42,7 +42,7 @@ const TexAndAmounts = ({
           Amount in Words:
         </div>
         <div className="italic mb-2 px-2">
-          {numberToWords(totalAmount - discount)}
+          {numberToWords(totalAmount)}
         </div>
       </div>
 
@@ -63,13 +63,13 @@ const TexAndAmounts = ({
             <div>{`₹ ${gstAmount}`}</div>
           </div>
         )}
+        <div className="flex justify-between font-semibold">
+          <div>Total Amount:</div>
+          <div>{` ₹ ${totalAmount}`}</div>
+        </div>
         <div className="flex justify-between">
           <div>Additional Discount:</div>
           <div>{`₹ ${discount}`}</div>
-        </div>
-        <div className="flex justify-between font-semibold">
-          <div>Total Amount:</div>
-          <div>{` ₹ ${totalAmount - discount}`}</div>
         </div>
         <div className="flex justify-between font-semibold">
           <div>PaidAmount:</div>

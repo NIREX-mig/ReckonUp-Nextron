@@ -29,7 +29,8 @@ autoUpdater.autoDownload = false;
 let mainWindow: BrowserWindow | null = null;
 let splashWindow: BrowserWindow | null = null;
 
-const TEMP_SECRET="4a97842f4e192fd7dc01becf43460466637d6834ab05501a066e9a6a48b64238"
+const TEMP_SECRET =
+  "4a97842f4e192fd7dc01becf43460466637d6834ab05501a066e9a6a48b64238";
 
 async function checkUserIsExistOrNot() {
   try {
@@ -368,7 +369,11 @@ ipcMain.on("change-password", async (event, args) => {
     const { currentPassword, newPassword, confirmPassword } = args;
 
     if (newPassword !== confirmPassword) {
-      throw new EventResponse(false, "New password and confirm password do not match.", {});
+      throw new EventResponse(
+        false,
+        "New password and confirm password do not match.",
+        {}
+      );
     }
 
     // Get user from the database
@@ -403,9 +408,12 @@ ipcMain.on("change-password", async (event, args) => {
     `);
     resetStmt.run(newPasswordHash, username);
 
-    const response = new EventResponse(true, "Password changed successfully.", {});
+    const response = new EventResponse(
+      true,
+      "Password changed successfully.",
+      {}
+    );
     event.reply("change-password", response);
-
   } catch (err) {
     if (!(err instanceof EventResponse)) {
       err = new EventResponse(false, "Internal error occurred.", {});
@@ -413,7 +421,6 @@ ipcMain.on("change-password", async (event, args) => {
     event.reply("change-password", err);
   }
 });
-
 
 // Update Profile data (email) Event
 ipcMain.on("update-profile", async (event, args) => {
@@ -1459,12 +1466,14 @@ ipcMain.on("dueInvoice-name", async (event, args) => {
 // create invoice Event
 ipcMain.on("createsetting", async (event, args) => {
   try {
-    const { ownerName, mobileNo, whatsappNo, address, shopName, GSTNO } =
-      await args;
+    const { ownerName, mobileNo, whatsappNo, address, shopName, GSTNO } = args;
+    console.log("args : " + args);
 
-    // check if a setting allready exists
+    // Check if a setting already exists
     const checkSettingStmt = configDB.prepare("SELECT * FROM settings LIMIT 1");
     const existingSetting = checkSettingStmt.get();
+
+    console.log("Existing Setting : " + existingSetting);
 
     if (existingSetting) {
       // Update existing settings
@@ -1476,9 +1485,18 @@ ipcMain.on("createsetting", async (event, args) => {
           address = ?, 
           shopName = ?, 
           GSTNO = ?
+        WHERE id = ?
       `);
 
-      updateStmt.run(ownerName, mobileNo, whatsappNo, address, shopName, GSTNO);
+      updateStmt.run(
+        ownerName,
+        mobileNo,
+        whatsappNo,
+        address,
+        shopName,
+        GSTNO,
+        existingSetting?.id // ensure only the existing row is updated
+      );
 
       event.reply(
         "createsetting",
@@ -1489,10 +1507,12 @@ ipcMain.on("createsetting", async (event, args) => {
 
     // Insert new setting if none exists
     const insertStmt = configDB.prepare(`
-      INSERT INTO settings (ownerName, mobileNo, whatsappNo, address, shopName, GSTNO, invoicetype, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?,?, ?)
-    `);
+        INSERT INTO settings (id, ownerName, mobileNo, whatsappNo, address, shopName, GSTNO, invoicetype, createdAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
     insertStmt.run(
+      1,
       ownerName,
       mobileNo,
       whatsappNo,
@@ -1505,10 +1525,10 @@ ipcMain.on("createsetting", async (event, args) => {
 
     event.reply(
       "createsetting",
-      new EventResponse(true, "Updated Successfully", {})
+      new EventResponse(true, "Created Successfully", {})
     );
   } catch (err) {
-    event.reply("createsetting", err);
+    event.reply("createsetting", new EventResponse(false, err.message, err));
   }
 });
 
@@ -1517,9 +1537,9 @@ ipcMain.on("fetchsetting", async (event) => {
   try {
     // Fetch the first (and only) settings record
     const getSettingStmt = configDB.prepare("SELECT * FROM settings LIMIT 1");
-    const setting: any = getSettingStmt.get();
+    const setting = getSettingStmt.get();
 
-    let newSetting = setting || {
+    const defaultSetting = {
       ownerName: "Not Available",
       mobileNo: "Not Available",
       whatsappNo: "Not Available",
@@ -1529,54 +1549,55 @@ ipcMain.on("fetchsetting", async (event) => {
       GSTNO: "Not Available",
     };
 
+    const finalSetting = setting || defaultSetting;
+
     // Create response and emit event
-    const response = new EventResponse(true, "Success", newSetting);
+    const response = new EventResponse(true, "Success", finalSetting);
     event.reply("fetchsetting", response);
-  } catch (err) {
-    event.reply("fetchsetting", err);
+  } catch (err: any) {
+    const errorResponse = new EventResponse(false, "Failed to fetch setting", {
+      error: err.message,
+    });
+    event.reply("fetchsetting", errorResponse);
   }
 });
 
 // upload qr code for payment Event
 ipcMain.on("uploadqr", async (event, args) => {
   try {
-    const { fileName, qrimg } = await args;
+    const { fileName, qrimg } = args;
 
+    // Decode the base64 image
     const base64Data = qrimg.replace(/^data:image\/\w+;base64,/, "");
     const filePath = path.join(uploadPath, fileName);
 
-    // Fetch current settings
-    const setting: any = configDB
-      .prepare("SELECT qrPath FROM settings LIMIT 1")
+    // Fetch existing setting (to get old QR path)
+    const setting = configDB
+      .prepare("SELECT id, qrPath FROM settings LIMIT 1")
       .get();
     const oldfilePath = setting?.qrPath;
 
-    // Function to update the QR path in the database
-    const updateQRPath = (newFilePath: string) => {
-      const updateStmt = configDB.prepare("UPDATE settings SET qrPath = ?");
-
-      if (!setting) {
-        // Insert new row if settings do not exist
-        configDB
-          .prepare("INSERT INTO settings (qrPath) VALUES (?)")
-          .run(newFilePath);
-      } else {
-        updateStmt.run(newFilePath);
-      }
-    };
-
-    // Write new QR code image
+    // Write new QR code image to disk
     fs.writeFileSync(filePath, base64Data, "base64");
 
-    // Remove old file if it exists
+    // Delete old QR file if it exists
     if (oldfilePath && fs.existsSync(oldfilePath)) {
       fs.unlinkSync(oldfilePath);
     }
 
-    // Update the database with new QR image path
-    updateQRPath(filePath);
+    // Update or insert QR path in settings
+    if (setting) {
+      configDB
+        .prepare("UPDATE settings SET qrPath = ? WHERE id = ?")
+        .run(filePath, setting.id);
+    } else {
+      configDB.prepare(
+          "INSERT INTO settings (id, qrPath, createdAt, invoicetype) VALUES (?, ?, ?, ?)"
+        )
+        .run(1,filePath, new Date().toISOString(), "invoice2");
+    }
 
-    // Create response and emit event
+    // Send success response
     const response = new EventResponse(
       true,
       "Successfully updated QR code.",
@@ -1584,22 +1605,31 @@ ipcMain.on("uploadqr", async (event, args) => {
     );
     event.reply("uploadqr", response);
   } catch (err) {
-    event.reply("uploadqr", err);
+    const errorResponse = new EventResponse(
+      false,
+      "Failed to upload QR code.",
+      {
+        error: err instanceof Error ? err.message : String(err),
+      }
+    );
+    event.reply("uploadqr", errorResponse);
   }
 });
 
 // get Qr code Event
-ipcMain.on("getqr", async (event) => {
+ipcMain.on("getqr", (event) => {
   try {
     // Fetch QR image path from the settings table
-    const setting: any = configDB
+    const setting = configDB
       .prepare("SELECT qrPath FROM settings LIMIT 1")
       .get();
 
     const filePath = setting?.qrPath;
 
     if (!filePath || !fs.existsSync(filePath)) {
-      throw new EventResponse(false, "Failed!", {});
+      const failResponse = new EventResponse(false, "QR code not found", {});
+      event.reply("getqr", failResponse);
+      return;
     }
 
     // Read the image and convert it to base64
@@ -1607,86 +1637,97 @@ ipcMain.on("getqr", async (event) => {
     const imageSrc = `data:image/png;base64,${imageBuffer.toString("base64")}`;
 
     // Send the image as response
-    const response = new EventResponse(true, "Success", imageSrc);
-    event.reply("getqr", response);
+    const successResponse = new EventResponse(true, "QR code loaded", imageSrc);
+    event.reply("getqr", successResponse);
   } catch (err) {
-    event.reply("getqr", err);
+    const errorResponse = new EventResponse(false, "Error reading QR code", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    event.reply("getqr", errorResponse);
   }
 });
 
 // upload Invoice logo Event
-ipcMain.on("upload-logo", async (event, args) => {
+ipcMain.on("upload-logo", (event, args) => {
   try {
-    const { fileName, logo } = await args;
-    console.log(fileName);
-    console.log(logo);
+    const { fileName, logo } = args;
+
     const base64Data = logo.replace(/^data:image\/\w+;base64,/, "");
     const filePath = path.join(uploadPath, fileName);
 
     // Fetch current logo path
-    const setting: any = configDB
-      .prepare("SELECT logoPath FROM settings LIMIT 1")
+    const setting = configDB
+      .prepare("SELECT id, logoPath FROM settings LIMIT 1")
       .get();
-    const oldfilePath = setting?.logoPath;
+    const oldFilePath = setting?.logoPath;
 
-    // Function to update the QR path in the database
-    const updateLogoPath = (newFilePath: string) => {
-      const updateStmt = configDB.prepare("UPDATE settings SET logoPath = ?");
-
-      if (!setting) {
-        // Insert new row if settings do not exist
-        configDB
-          .prepare("INSERT INTO settings (logoPath) VALUES (?)")
-          .run(newFilePath);
-      } else {
-        updateStmt.run(newFilePath);
-      }
-    };
-
-    // Write new QR code image
+    // Write new logo image to disk
     fs.writeFileSync(filePath, base64Data, "base64");
 
-    // Remove old file if it exists
-    if (oldfilePath && fs.existsSync(oldfilePath)) {
-      fs.unlinkSync(oldfilePath);
+    // Delete old logo file if it exists
+    if (oldFilePath && fs.existsSync(oldFilePath)) {
+      fs.unlinkSync(oldFilePath);
     }
 
-    // Update the database with new QR image path
-    updateLogoPath(filePath);
+    // Update or insert logo path in settings
+    if (setting){
+      configDB
+        .prepare("UPDATE settings SET logoPath = ? WHERE id = ?")
+        .run(filePath, setting.id);
+    } else {
+      configDB
+        .prepare(
+          "INSERT INTO settings (id, logoPath, createdAt, invoicetype) VALUES (?, ?, ?, ?)"
+        )
+        .run(1,filePath, new Date().toISOString(), "invoice2");
+    }
 
     // Create response and emit event
     const response = new EventResponse(
       true,
-      "Successfully updated QR code.",
+      "Successfully updated logo.",
       filePath
     );
-    event.reply("upload-log", response);
+    event.reply("upload-logo", response); // Corrected event name
   } catch (err) {
-    event.reply("upload-logo", err);
+    const errorResponse = new EventResponse(false, "Failed to upload logo.", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    event.reply("upload-logo", errorResponse); // Corrected event name
   }
 });
 
 // Get Logo Event
-ipcMain.on("get-logo", async (event) => {
+ipcMain.on("get-logo", (event) => {
   try {
-    // Fetch QR image path from the settings table
-    const setting: any = configDB
+    // Fetch logo path from the settings table
+    const setting = configDB
       .prepare("SELECT logoPath FROM settings LIMIT 1")
       .get();
     const filePath = setting?.logoPath;
 
     if (!filePath || !fs.existsSync(filePath)) {
-      throw new EventResponse(false, "Failed!", {});
+      const failResponse = new EventResponse(false, "Logo not found", {});
+      event.reply("get-logo", failResponse);
+      return;
     }
+
     // Read the image and convert it to base64
     const imageBuffer = fs.readFileSync(filePath);
-    const logoSrc = `data:/image/png;base64, ${imageBuffer.toString("base64")}`;
+    const logoSrc = `data:image/png;base64,${imageBuffer.toString("base64")}`;
 
     // Send the image as response
-    const response = new EventResponse(true, "Success", logoSrc);
-    event.reply("get-logo", response);
+    const successResponse = new EventResponse(
+      true,
+      "Logo loaded successfully",
+      logoSrc
+    );
+    event.reply("get-logo", successResponse);
   } catch (err) {
-    event.reply("get-logo", err);
+    const errorResponse = new EventResponse(false, "Error loading logo", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    event.reply("get-logo", errorResponse);
   }
 });
 
@@ -1712,7 +1753,7 @@ ipcMain.on("export2excel", async (event, args) => {
 
     const includesTotalPaid = selectedKeys.includes("TotalPaid");
 
-    const fieldMap: Record<string, string> = {
+    const fieldMap = {
       invoiceNo: "i.invoiceNo",
       name: "i.name",
       phone: "i.phone",
@@ -1742,15 +1783,14 @@ ipcMain.on("export2excel", async (event, args) => {
       createdAt: "i.createdAt",
     };
 
-    const keyMapToResultAlias = (key: string) => {
-      if (fieldMap[key].includes(" AS ")) {
-        return fieldMap[key].split(" AS ")[1].trim();
-      }
-      return fieldMap[key].split(".")[1];
+    const keyMapToResultAlias = (key) => {
+      if (!fieldMap[key]) return key;
+      return fieldMap[key].includes(" AS ")
+        ? fieldMap[key].split(" AS ")[1].trim()
+        : fieldMap[key].split(".")[1];
     };
 
     const selectedSqlFields = selectedKeys.map((key) => fieldMap[key]);
-
     const sql = `
       SELECT ${selectedSqlFields.join(", ")}
       FROM invoices i
@@ -1759,9 +1799,10 @@ ipcMain.on("export2excel", async (event, args) => {
       ORDER BY i.invoiceNo, p.name
     `;
 
-    const rows: any[] = dataDB
+    const rows = dataDB
       .prepare(sql)
       .all(adjustedStartDate.toISOString(), adjustedEndDate.toISOString());
+
     if (!rows.length) {
       return event.reply(
         "export2excel",
@@ -1770,16 +1811,16 @@ ipcMain.on("export2excel", async (event, args) => {
     }
 
     // Group by invoiceNo
-    const grouped = new Map<string, any[]>();
+    const grouped = new Map();
     for (const row of rows) {
       const invoiceNo = row.invoiceNo;
       if (!grouped.has(invoiceNo)) {
         grouped.set(invoiceNo, []);
       }
-      grouped.get(invoiceNo)!.push(row);
+      grouped.get(invoiceNo).push(row);
     }
 
-    const headerLabels: Record<string, string> = {
+    const headerLabels = {
       invoiceNo: "Invoice No",
       name: "Name",
       phone: "Phone No",
@@ -1807,29 +1848,29 @@ ipcMain.on("export2excel", async (event, args) => {
       createdAt: "Created At",
     };
 
-    const headerRow = selectedKeys.map((key) => headerLabels[key]);
-    const dataRows: any[][] = [];
-    const merges: any[] = [];
+    const headerRow = selectedKeys.map((key) => headerLabels[key] || key);
+    const dataRows = [];
+    const merges = [];
     let rowIndex = 1;
 
-    for (const [invoiceNo, products] of grouped.entries()) {
+    for (const [, products] of grouped.entries()) {
       const startRow = rowIndex;
 
-      products.forEach((product) => {
-        const row: any[] = [];
-        selectedKeys.forEach((key) => {
+      for (const product of products) {
+        const row = selectedKeys.map((key) => {
           const alias = keyMapToResultAlias(key);
-          row.push(product[alias]?.toString() ?? "");
+          return product[alias]?.toString() ?? "";
         });
         dataRows.push(row);
         rowIndex++;
-      });
+      }
 
-      const invoiceMergeCols = selectedKeys
-        .map((key, idx) => (fieldMap[key].startsWith("p.") ? -1 : idx))
-        .filter((idx) => idx >= 0);
+      // Merge invoice-level cells across product rows
+      const invoiceCols = selectedKeys
+        .map((key, i) => (fieldMap[key]?.startsWith("p.") ? -1 : i))
+        .filter((i) => i >= 0);
 
-      for (const col of invoiceMergeCols) {
+      for (const col of invoiceCols) {
         merges.push({
           s: { r: startRow, c: col },
           e: { r: rowIndex - 1, c: col },
@@ -1847,7 +1888,10 @@ ipcMain.on("export2excel", async (event, args) => {
 
     const { filePath, canceled } = await dialog.showSaveDialog({
       title: "Save Exported Excel",
-      defaultPath: path.join(app.getPath("documents"), `exported_data.xlsx`),
+      defaultPath: path.join(
+        app.getPath("documents"),
+        `invoices_${Date.now()}.xlsx`
+      ),
       filters: [{ name: "Excel Files", extensions: ["xlsx"] }],
     });
 
@@ -1856,18 +1900,20 @@ ipcMain.on("export2excel", async (event, args) => {
         "export2excel",
         new EventResponse(false, "Export cancelled", {})
       );
-    } else {
-      XLSX.writeFile(wb, filePath);
-      return event.reply(
-        "export2excel",
-        new EventResponse(true, "Successfully exported Excel file!", {})
-      );
     }
+
+    XLSX.writeFile(wb, filePath);
+    event.reply(
+      "export2excel",
+      new EventResponse(true, "Successfully exported Excel file!", {})
+    );
   } catch (err) {
     console.error("Export error:", err);
     event.reply(
       "export2excel",
-      new EventResponse(false, "Export failed", { error: err.message })
+      new EventResponse(false, "Export failed", {
+        error: err instanceof Error ? err.message : String(err),
+      })
     );
   }
 });
@@ -1875,12 +1921,28 @@ ipcMain.on("export2excel", async (event, args) => {
 // Feedback Event
 ipcMain.on("feedback", async (event, args) => {
   try {
-    const { message } = await args;
+    const { message } = args;
+
+    if (!message) {
+      return event.reply(
+        "feedback",
+        new EventResponse(false, "Feedback message is required.", {})
+      );
+    }
+
     await sendFeedbackEmail(message);
-    const response = new EventResponse(true, "Successfully Send Feedback.", {});
+
+    const response = new EventResponse(true, "Successfully sent feedback.", {});
     event.reply("feedback", response);
   } catch (err) {
-    event.reply("feedback", err);
+    const errorMessage =
+      err instanceof Error ? err.message : "Unknown error occurred.";
+    event.reply(
+      "feedback",
+      new EventResponse(false, "Failed to send feedback.", {
+        error: errorMessage,
+      })
+    );
   }
 });
 
@@ -1896,8 +1958,8 @@ ipcMain.on("setInvoiceType", (event, args) => {
       configDB.prepare("UPDATE settings SET invoicetype = ?").run(invoiceType);
     } else {
       configDB
-        .prepare("INSERT INTO settings (invoicetype) VALUES (?)")
-        .run(invoiceType);
+        .prepare("INSERT INTO settings (id, invoicetype) VALUES (?, ?)")
+        .run(1,invoiceType);
     }
 
     event.reply("setInvoiceType", new EventResponse(true, "success", null));
@@ -2071,7 +2133,6 @@ ipcMain.on("validate-setting-otp", async (event, args) => {
 
     const response = new EventResponse(true, "OTP validated successfully.", {});
     event.reply("validate-setting-otp", response);
-
   } catch (err) {
     // In case the error is not an EventResponse instance
     if (!(err instanceof EventResponse)) {
@@ -2080,7 +2141,6 @@ ipcMain.on("validate-setting-otp", async (event, args) => {
     event.reply("validate-setting-otp", err);
   }
 });
-
 
 // Update new password of Forget setting login password Event
 ipcMain.on("forgot-setting-password", async (event, args) => {
@@ -2107,9 +2167,12 @@ ipcMain.on("forgot-setting-password", async (event, args) => {
     `);
     updateStmt.run(newPasswordHash, 1);
 
-    const response = new EventResponse(true, "Password reset successfully.", {});
+    const response = new EventResponse(
+      true,
+      "Password reset successfully.",
+      {}
+    );
     event.reply("forgot-setting-password", response);
-
   } catch (err) {
     if (!(err instanceof EventResponse)) {
       err = new EventResponse(false, "Internal error occurred.", {});
@@ -2117,7 +2180,6 @@ ipcMain.on("forgot-setting-password", async (event, args) => {
     event.reply("forgot-setting-password", err);
   }
 });
-
 
 //---------------------------------
 //       Payment Events
