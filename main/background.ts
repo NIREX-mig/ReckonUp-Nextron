@@ -1,6 +1,3 @@
-import env from "dotenv";
-env.config();
-
 import path from "path";
 import { app, ipcMain, dialog, BrowserWindow } from "electron";
 import serve from "electron-serve";
@@ -31,6 +28,8 @@ autoUpdater.autoDownload = false;
 
 let mainWindow: BrowserWindow | null = null;
 let splashWindow: BrowserWindow | null = null;
+
+const TEMP_SECRET="4a97842f4e192fd7dc01becf43460466637d6834ab05501a066e9a6a48b64238"
 
 async function checkUserIsExistOrNot() {
   try {
@@ -253,7 +252,7 @@ ipcMain.on("forgotpasswordemail", async (event, args) => {
       username: user.username,
     };
 
-    const tempToken = jwt.sign(payload, process.env.TEMP_SECRET, {
+    const tempToken = jwt.sign(payload, TEMP_SECRET, {
       expiresIn: "10m",
     });
 
@@ -280,7 +279,7 @@ ipcMain.on("forgotpasswordemail", async (event, args) => {
 ipcMain.on("validateotp", async (event, args) => {
   try {
     const { otp, token } = await args;
-    const decodedToken: any = jwt.verify(token, process.env.TEMP_SECRET);
+    const decodedToken: any = jwt.verify(token, TEMP_SECRET);
 
     const stmt = configDB.prepare("SELECT * FROM users WHERE username = ?");
     const user: any = stmt.get(decodedToken.username);
@@ -313,7 +312,7 @@ ipcMain.on("forgotpassword", async (event, args) => {
       throw new EventResponse(false, "Unauthorized Access!", {});
     }
 
-    const decodedToken: any = jwt.verify(token, process.env.TEMP_SECRET);
+    const decodedToken: any = jwt.verify(token, TEMP_SECRET);
     const stmt = configDB.prepare("SELECT * FROM users WHERE username = ?");
     const user: any = stmt.get(decodedToken.username);
 
@@ -366,48 +365,55 @@ ipcMain.on("logout", async (event) => {
 // Change profile (app User) password Event
 ipcMain.on("change-password", async (event, args) => {
   try {
-    const { currentPassword, newPassword, confirmPassword } = await args;
-    // get user from database
+    const { currentPassword, newPassword, confirmPassword } = args;
+
+    if (newPassword !== confirmPassword) {
+      throw new EventResponse(false, "New password and confirm password do not match.", {});
+    }
+
+    // Get user from the database
     const stmt = configDB.prepare(`
       SELECT * FROM users WHERE username = ?
     `);
 
-    const user: any = stmt.get("add-admin");
+    const username = "app-admin"; // consistent username
+    const user: any = stmt.get(username);
 
     if (!user) {
-      throw new EventResponse(false, "Invalid Current Password.", {});
+      throw new EventResponse(false, "User not found", {});
     }
 
-    // check Current password is Valid or not
+    // Validate current password
     const currentPasswordIsValid = await bcrypt.compare(
       currentPassword,
       user.password
     );
 
     if (!currentPasswordIsValid) {
-      throw new EventResponse(false, "Invalid Credential!", {});
+      throw new EventResponse(false, "Invalid current password.", {});
     }
 
-    // create new password hash
+    // Create new password hash
     const salt = await bcrypt.genSalt(10);
-    const newPasswordHash = await bcrypt.hash(confirmPassword, salt);
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
 
-    // update new password
+    // Update new password
     const resetStmt = configDB.prepare(`
       UPDATE users SET password = ? WHERE username = ?
     `);
-    resetStmt.run(newPasswordHash, "app-admin");
+    resetStmt.run(newPasswordHash, username);
 
-    const response = new EventResponse(
-      true,
-      "Successfully Password Changed.",
-      {}
-    );
+    const response = new EventResponse(true, "Password changed successfully.", {});
     event.reply("change-password", response);
+
   } catch (err) {
+    if (!(err instanceof EventResponse)) {
+      err = new EventResponse(false, "Internal error occurred.", {});
+    }
     event.reply("change-password", err);
   }
 });
+
 
 // Update Profile data (email) Event
 ipcMain.on("update-profile", async (event, args) => {
@@ -1612,7 +1618,8 @@ ipcMain.on("getqr", async (event) => {
 ipcMain.on("upload-logo", async (event, args) => {
   try {
     const { fileName, logo } = await args;
-
+    console.log(fileName);
+    console.log(logo);
     const base64Data = logo.replace(/^data:image\/\w+;base64,/, "");
     const filePath = path.join(uploadPath, fileName);
 
@@ -1886,19 +1893,14 @@ ipcMain.on("setInvoiceType", (event, args) => {
       .get();
 
     if (setting) {
-      configDB
-        .prepare("UPDATE settings SET invoicetype = ?")
-        .run(invoiceType);
+      configDB.prepare("UPDATE settings SET invoicetype = ?").run(invoiceType);
     } else {
       configDB
         .prepare("INSERT INTO settings (invoicetype) VALUES (?)")
         .run(invoiceType);
     }
 
-    event.reply(
-      "setInvoiceType",
-      new EventResponse(true, "success", null)
-    );
+    event.reply("setInvoiceType", new EventResponse(true, "success", null));
   } catch (err) {
     event.reply(
       "setInvoiceType",
@@ -1931,7 +1933,6 @@ ipcMain.on("getInvoiceType", (event) => {
     );
   }
 });
-
 
 // -------------------------------------
 //     Setting Authentication Events
@@ -2045,75 +2046,78 @@ ipcMain.on("setting-forgot-email", async (event) => {
 // Validate otp of forget Setting login password Event
 ipcMain.on("validate-setting-otp", async (event, args) => {
   try {
-    const { otp } = await args;
-    // get setting auth from db
-    const stmt = configDB.prepare(`SELECT * FROM settinauth WHERE id = ?`);
+    const { otp } = args;
+
+    // Correct table name here
+    const stmt = configDB.prepare(`SELECT * FROM settingauth WHERE id = ?`);
     const settingAuth: any = stmt.get(1);
 
     if (!settingAuth) {
       throw new EventResponse(false, "Something Went Wrong!", {});
     }
 
-    // check otp is correct or not
+    // Compare provided OTP with hashed OTP
     const otpIsValid = await bcrypt.compare(otp, settingAuth.forgotOtpHash);
 
     if (!otpIsValid) {
       throw new EventResponse(false, "Incorrect OTP.", {});
     }
 
-    // update otp hash or otpvalidation
+    // Update validation status
     const resetStmt = configDB.prepare(`
       UPDATE settingauth SET otpValidation = ? WHERE id = ?
     `);
     resetStmt.run("success", 1);
 
-    const response = new EventResponse(true, "OPT validate SuccessFully.", {});
+    const response = new EventResponse(true, "OTP validated successfully.", {});
     event.reply("validate-setting-otp", response);
+
   } catch (err) {
+    // In case the error is not an EventResponse instance
+    if (!(err instanceof EventResponse)) {
+      err = new EventResponse(false, "Internal error occurred.", {});
+    }
     event.reply("validate-setting-otp", err);
   }
 });
 
+
 // Update new password of Forget setting login password Event
 ipcMain.on("forgot-setting-password", async (event, args) => {
   try {
-    const { newPassword } = await args;
+    const { password } = args;
 
-    // get setting auth from db
-    const stmt = configDB.prepare(`SELECT * FROM settinauth WHERE id = ?`);
+    // Get setting auth from DB
+    const stmt = configDB.prepare(`SELECT * FROM settingauth WHERE id = ?`);
     const settingAuth: any = stmt.get(1);
 
     if (!settingAuth) {
-      throw new EventResponse(false, "Something Went Wrong!", {});
+      throw new EventResponse(false, "Something went wrong!", {});
     }
 
-    // create new password hash
+    // Create new password hash
     const salt = await bcrypt.genSalt(10);
-    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+    const newPasswordHash = await bcrypt.hash(password, salt);
 
-    // update password
-    const resetStmt = configDB.prepare(`
-      UPDATE settingauth SET password = ? WHERE id = ?
+    // Update password and clear OTP data in one query
+    const updateStmt = configDB.prepare(`
+      UPDATE settingauth
+      SET password = ?, forgotOtpHash = NULL, otpValidation = NULL
+      WHERE id = ?
     `);
-    resetStmt.run(newPasswordHash, 1);
+    updateStmt.run(newPasswordHash, 1);
 
-    // clear otp or validation
-    const clearStmt = configDB.prepare(`
-      UPDATE settingauth SET forgotOtpHash = NULL, otpValidation = NULL WHERE id = ?
-    `);
-    clearStmt.run(1);
-
-    const response = new EventResponse(
-      true,
-      "Forgot Password Successfully.",
-      {}
-    );
-
+    const response = new EventResponse(true, "Password reset successfully.", {});
     event.reply("forgot-setting-password", response);
+
   } catch (err) {
+    if (!(err instanceof EventResponse)) {
+      err = new EventResponse(false, "Internal error occurred.", {});
+    }
     event.reply("forgot-setting-password", err);
   }
 });
+
 
 //---------------------------------
 //       Payment Events

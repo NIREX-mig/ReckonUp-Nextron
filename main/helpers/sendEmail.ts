@@ -1,22 +1,19 @@
-import env from "dotenv";
-env.config();
-
 import nodemailer from "nodemailer";
 import EventResponse from "./EventResponse";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    user: "jarvis14220@gmail.com", // Your email address
+    pass: "npjbzqmynvkbsjok", // Your email password or app password
   },
 });
 
 const sendForgotPasswordEmail = async (otp) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL,
+      from: "jarvis14220@gmail.com",
+      to: "akay93796@gmail.com",
       subject: "Forgot Password",
       html: `
             <h2>HI ReckonUp Devloper,</h2>
@@ -41,8 +38,8 @@ const sendForgotPasswordEmail = async (otp) => {
 export const sendFeedbackEmail = async (message) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL,
+      from: "jarvis14220@gmail.com",
+      to: "akay93796@gmail.com", // Replace with your email address
       subject: "Feedback Or Bug Report",
       html: `
             <h2>Hello App Devloper,</h2>
@@ -63,7 +60,7 @@ export const sendFeedbackEmail = async (message) => {
 export const changePassword = async (email, otp) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: "jarvis14220@gmail.com",
       to: email,
       subject: "Feedback Or Bug Report",
       html: `

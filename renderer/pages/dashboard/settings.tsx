@@ -28,7 +28,7 @@ const SettingPage: NextPageWithLayout = () => {
   const [activeTab, setActiveTab] = useState("general");
 
   const [otpContainer, setOtpcontainer] = useState(false);
-  const [otp, setOtp] = useState(null);
+  const [otp, setOtp] = useState("");
   const [otpIsValid, setOtpIsValid] = useState(false);
   const [otpSubmit, setOtpSubmit] = useState(false);
 
@@ -64,11 +64,14 @@ const SettingPage: NextPageWithLayout = () => {
 
     window.ipc.send("validate-setting-otp", { otp });
     window.ipc.on("validate-setting-otp", (res: APiRes) => {
+      console.log(res);
       if (res.success) {
         toast.success(res.message);
+        setOtp("");
         setOtpSubmit(false);
         setOtpIsValid(true);
       } else {
+        setOtp("");
         setOtpSubmit(false);
         setOtpIsValid(false);
         toast.error(res.message);
@@ -79,7 +82,9 @@ const SettingPage: NextPageWithLayout = () => {
   const handleSubmitNewPassword = () => {
     setPasswordSubmit(true);
 
-    window.ipc.send("forgot-setting-password", forgotPassword);
+    window.ipc.send("forgot-setting-password", {
+      password: forgotPassword.new,
+    });
     window.ipc.on("forgot-setting-password", (res: APiRes) => {
       if (res.success) {
         toast.success(res.message);
