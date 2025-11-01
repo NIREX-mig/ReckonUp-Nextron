@@ -7,11 +7,24 @@ import Modal from "../../components/ui/Modal";
 import { APiRes } from "../../types";
 import toast from "react-hot-toast";
 import { IoSearchOutline } from "react-icons/io5";
-import DueInvoiceTable from "../../components/ui/DueInvoiceTable";
 import Select from "react-select";
-import Pagination from "../../components/ui/Pagination";
 import useModal from "../../hooks/useModal";
 import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import DataTable from "../../components/ui/DataTable";
+import { appTitle } from "../../constents";
+
+interface InvoicePrameter {
+  invoiceNo: string;
+  name: string;
+  address: string;
+  phone: string;
+  createdAt: string;
+  totalAmount: number;
+  totalPaid: number;
+  status: string;
+  dueAmount: number;
+}
 
 const DueHistoryPage: NextPageWithLayout = () => {
   const currentYear = new Date().getFullYear();
@@ -25,6 +38,19 @@ const DueHistoryPage: NextPageWithLayout = () => {
   const [filterData, setFilterdData] = useState([]);
   const [currentPage, setCurrentPage] = useState(undefined);
   const [totalPage, setTotalPage] = useState(undefined);
+
+  const columns = [
+    { key: "invoiceNo", label: "Invoice No" },
+    { key: "name", label: "Name" },
+    { key: "address", label: "Address" },
+    { key: "phone", label: "Phone" },
+    { key: "createdAt", label: "Date" },
+    { key: "totalAmount", label: "Total" },
+    { key: "totalPaid", label: "Total Paid" },
+    { key: "discount", label: "Discount" },
+    { key: "status", label: "Status" },
+    { key: "dueAmount", label: "Dues" },
+  ];
 
   const yearOptions = useMemo(() => {
     return Array.from({ length: currentYear - startYear + 1 }, (_, index) => {
@@ -50,7 +76,7 @@ const DueHistoryPage: NextPageWithLayout = () => {
   };
 
   const handleSearchInvoice = () => {
-     window.ipc.send("dueInvoice-name", { pageNo: currentPage, name: search });
+    window.ipc.send("dueInvoice-name", { pageNo: currentPage, name: search });
 
     window.ipc.on("dueInvoice-name", async (res: APiRes) => {
       if (res.success) {
@@ -59,6 +85,18 @@ const DueHistoryPage: NextPageWithLayout = () => {
         setCurrentPage(res.data.currentPage);
       } else toast.error(res.message);
     });
+  };
+
+  const handleShowDetails = (invoice: InvoicePrameter): void => {
+    openModal("Invoice-Details");
+    const jsonInvoice = JSON.stringify(invoice);
+    localStorage.setItem("finalInvoice", jsonInvoice);
+  };
+
+  const handlePay = (invoice): void => {
+    const jsonInvoice = JSON.stringify(invoice);
+    localStorage.setItem("finalInvoice", jsonInvoice);
+    openModal("Payment");
   };
 
   const handleReset = () => {
@@ -73,41 +111,46 @@ const DueHistoryPage: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <section className="p-1 bg-primary-50 h-[calc(100%-16px)] overflow-auto rounded-xl m-2">
-        <Modal type={modal.type} isOpen={modal.isOpen} onClose={closeModal} modalData={filterData}/>
-        <Header title="Due Invoices History" extraStyle="mb-2" />
+      <section className="h-[calc(100%-10px)] overflow-auto">
+        <Modal
+          type={modal.type}
+          isOpen={modal.isOpen}
+          onClose={closeModal}
+          modalData={filterData}
+        />
+        <Header title="Due Invoices History" />
         {/* <Modal closeModal={} type={} /> */}
-        <div className="rounded-lg border border-primary-500 bg-primary-50 h-[calc(100%-70px)] p-2">
+        <div className="">
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className=" flex gap-3 ">
               <div className="mx-auto flex items-center">
-                <IoSearchOutline
-                  size={20}
-                  className="text-primary-700 translate-x-7"
-                />
-                <input
+                <Input
                   type="text"
-                  className="bg-primary-100 border border-primary-900 text-primary-900 text-sm font-semibold rounded-md focus:outline-primary-900 block w-[300px] p-1.5 px-2 placeholder:px-1 indent-6"
+                  className="bg-primary-50 border border-primary-900 text-primary-900 text-sm font-semibold rounded-md focus:outline-primary-900 block w-[300px] p-1.5 px-2 placeholder:px-1 indent-6"
                   placeholder="Search By Customer Name"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  icon={
+                    <IoSearchOutline size={20} className="text-primary-700" />
+                  }
                   required
                 />
               </div>
+
               <Button
                 title="Search"
                 buttonType="button"
                 handleClick={handleSearchInvoice}
-                extraClass="sm:w-auto py-1.5"
+                extraClass="py-1.5 text-white bg-primary-800"
               />
 
               <Button
                 title="Reset"
                 buttonType="button"
                 handleClick={handleReset}
-                extraClass="sm:w-auto py-1.5 bg-red-600 hover:bg-red-700"
+                extraClass="py-1.5 bg-btnSecondary text-white"
               />
             </div>
 
@@ -121,18 +164,17 @@ const DueHistoryPage: NextPageWithLayout = () => {
             />
           </div>
           <div className="w-full">
-            <DueInvoiceTable
-              invoiceData={filterData}
-              handlePaymentClick={(invoice) => {
-                openModal("Payment");
-                const jsonInvoice = JSON.stringify(invoice);
-                localStorage.setItem("finalInvoice", jsonInvoice);
-              }}
-            />
-            <Pagination
+            <DataTable
+              columns={columns}
+              data={filterData}
+              onShowDetails={handleShowDetails}
+              onPay={handlePay}
+              Discount
+              height="180px"
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               totalPages={totalPage}
+              details={false}
             />
           </div>
         </div>

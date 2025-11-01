@@ -69,7 +69,7 @@ const SelectCategory = ({
         className=" pt-2 pr-2 pb-1 flex gap-2"
       >
         <select
-          className="bg-primary-100 border border-primary-900 text-gray-900 text-sm rounded-md focus:outline-primary-900 block w-30 px-2"
+          className="bg-primary-50 border border-primary-900 text-gray-900 text-sm rounded-md focus:outline-primary-900 block w-30 px-2"
           value={selectedOption}
           onChange={(e) => setSelectedOption(e.target.value)}
         >
@@ -80,11 +80,11 @@ const SelectCategory = ({
           type="text"
           placeholder="Search"
           value={search}
-          handleChangeText={(e) => {
+          onChange={(e) => {
             setSearch(e.target.value);
           }}
         />
-        <Button title="Search" buttonType="submit" />
+        <Button title="Search" buttonType="submit" extraClass="px-5 bg-primary-800 text-white" />
       </form>
     </div>
   );

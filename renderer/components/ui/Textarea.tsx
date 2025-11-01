@@ -11,7 +11,7 @@ const Textarea = ({ title, row, value, handleTextChange, placeholder }) => {
         autoComplete="off"
         value={value}
         onChange={handleTextChange}
-        className="bg-primary-100 border border-primary-800 text-primary-900 text-sm font-semibold rounded-md focus:outline-primary-900 block py-1.5 px-2"
+        className="bg-primary-50 border border-primary-800 text-primary-900 text-sm font-semibold rounded-md focus:outline-primary-900 block py-1.5 px-2"
         placeholder={placeholder}
         required
       />

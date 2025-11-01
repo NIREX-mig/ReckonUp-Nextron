@@ -8,7 +8,7 @@ const SelectDate = ({ date, setDate }) => {
         <Input
           type="date"
           value={date.start}
-          handleChangeText={(e) =>
+          onChange={(e) =>
             setDate((prev) => ({
               ...prev,
               start: e.target.value,
@@ -21,7 +21,7 @@ const SelectDate = ({ date, setDate }) => {
         <Input
           type="date"
           value={date.end}
-          handleChangeText={(e) =>
+          onChange={(e) =>
             setDate((prev) => ({
               ...prev,
               end: e.target.value,

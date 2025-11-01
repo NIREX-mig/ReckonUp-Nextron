@@ -11,6 +11,7 @@ import Select from "react-select";
 import TotalPaymentsInMonth from "../../components/reports/TotalPaymentsInMonth";
 import { APiRes } from "../../types";
 import ProgressLevel from "../../components/reports/ProgressLevel";
+import { appTitle } from "../../constents";
 
 const reports: NextPageWithLayout = () => {
   const currentYear = new Date().getFullYear();
@@ -103,15 +104,11 @@ const reports: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <section className="p-1 bg-primary-100 h-[calc(100%-16px)] overflow-auto rounded-xl m-2">
-        <Header title="Reports" extraStyle="mb-2" />
-        <div className="rounded-lg border border-primary-500 bg-primary-50 min-h-screen px-5 py-5">
-          <div className="flex justify-between">
-            <h2 className="text-3xl font-bold text-primary-900">
-              Report Of <span>{year}</span>
-            </h2>
+      <section className="h-full overflow-auto">
+        <Header title={`Reports of ${year}`} />
+        <div className="min-h-screen mb-2">
             <Select
               options={yearOptions}
               value={selected}
@@ -120,11 +117,10 @@ const reports: NextPageWithLayout = () => {
               isClearable
               className="outline-none "
             />
-          </div>
-          <div className=" w-full grid grid-cols-2 gap-x-5">
+          <div className=" w-full grid grid-cols-2 gap-x-5 mt-2">
             <div>
-              <div className="grid grid-cols-2 gap-x-5 gap-y-3 mt-5">
-                <div className="h-[180px] bg-primary-200 p-5 border border-primary-300 rounded-lg">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-3">
+                <div className="h-[180px] bg-primary-100 p-5 border border-primary-600 rounded-lg">
                   <div className="flex justify-between">
                     <h3 className="text-[24px] font-semibold text-primary-800">
                       Total Invoices
@@ -139,7 +135,7 @@ const reports: NextPageWithLayout = () => {
                     {reportStats.totalInvoice}
                   </h2>
                 </div>
-                <div className="h-[180px] bg-primary-200 p-5 border border-primary-300 rounded-lg">
+                <div className="h-[180px] bg-primary-100 p-5 border border-primary-600 rounded-lg">
                   <div className="flex justify-between">
                     <h3 className="text-[24px] font-semibold text-primary-800">
                       Total Payments
@@ -154,7 +150,7 @@ const reports: NextPageWithLayout = () => {
                     {reportStats.totalPaymets}
                   </h2>
                 </div>
-                <div className="h-[180px] bg-primary-200 p-5 border border-primary-300 rounded-lg">
+                <div className="h-[180px] bg-primary-100 p-5 border border-primary-600 rounded-lg">
                   <div className="flex justify-between">
                     <h3 className="text-[24px] font-semibold text-primary-800">
                       Total Paid Invoice
@@ -169,7 +165,7 @@ const reports: NextPageWithLayout = () => {
                     {reportStats.totalPaidInovice}
                   </h2>
                 </div>
-                <div className="h-[180px] bg-primary-200 p-5 border border-primary-300 rounded-lg">
+                <div className="h-[180px] bg-primary-100 p-5 border border-primary-600 rounded-lg">
                   <div className="flex justify-between">
                     <h3 className="text-[24px] font-semibold text-primary-800">
                       Total Due Invoice
@@ -186,11 +182,11 @@ const reports: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <div className=" w-full border border-primary-300 bg-primary-200 rounded-lg p-3 mt-4">
+              <div className=" w-full border border-primary-600 bg-primary-100 rounded-lg p-3 mt-4">
                 <TotalPaymentsInMonth payments={paymentsInYear} />
               </div>
             </div>
-            <div className=" mt-5">
+            <div className="">
               <InvoiceSatatusChart
                 paymentCount={yearsData.paymentCount}
                 invoiceCount={yearsData.invoiceCount}

@@ -7,9 +7,22 @@ import useModal from "../../hooks/useModal";
 import { APiRes } from "../../types";
 import Header from "../../components/ui/Header";
 import toast from "react-hot-toast";
-import SearchPageTable from "../../components/ui/SearchPageTable";
 import DateRange from "../../components/search/DateRange";
 import SelectCategory from "../../components/search/SelectCategory";
+import DataTable from "../../components/ui/DataTable";
+import { appTitle } from "../../constents";
+
+interface InvoicePrameter {
+  invoiceNo: string;
+  name: string;
+  address: string;
+  phone: string;
+  createdAt: string;
+  totalAmount: number;
+  totalPaid: number;
+  status: string;
+  dueAmount: number;
+}
 
 const SearchPage: NextPageWithLayout = () => {
   const { modal, openModal, closeModal } = useModal();
@@ -23,10 +36,28 @@ const SearchPage: NextPageWithLayout = () => {
   const [filterCurrentPage, setFilterCurrentPage] = useState(undefined);
   const [filterTotalPage, setFilterTotalPage] = useState(undefined);
 
-  const handleShowDetails = (invoice) => {
+  const columns = [
+    { key: "invoiceNo", label: "Invoice No" },
+    { key: "name", label: "Name" },
+    { key: "address", label: "Address" },
+    { key: "phone", label: "Phone" },
+    { key: "createdAt", label: "Date" },
+    { key: "totalAmount", label: "Total" },
+    { key: "totalPaid", label: "Total Paid" },
+    { key: "status", label: "Status" },
+    { key: "dueAmount", label: "Dues" },
+  ];
+
+  const handleShowDetails = (invoice: InvoicePrameter): void => {
     openModal("Invoice-Details");
     const jsonInvoice = JSON.stringify(invoice);
     localStorage.setItem("finalInvoice", jsonInvoice);
+  };
+
+  const handlePay = (invoice: InvoicePrameter): void => {
+    const jsonInvoice = JSON.stringify(invoice);
+    localStorage.setItem("finalInvoice", jsonInvoice);
+    openModal("Payment");
   };
 
   const getInvoices = () => {
@@ -54,17 +85,17 @@ const SearchPage: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <section className="p-1 bg-primary-50 h-[calc(100%-16px)] overflow-auto rounded-xl m-2">
+      <section className="h-[calc(100%-10px)] overflow-auto">
         <Modal
           type={modal.type}
           isOpen={modal.isOpen}
           onClose={closeModal}
           modalData={filteredData}
         />
-        <Header title="View Invoices" extraStyle="mb-2" />
-        <div className="rounded-lg bg-primary-50 border border-primary-500">
+        <Header title="View Invoices" />
+        <div className="">
           <div className="flex justify-between">
             <DateRange
               currentPage={filterCurrentPage}
@@ -83,10 +114,14 @@ const SearchPage: NextPageWithLayout = () => {
             />
           </div>
           <hr />
-          <div className="h-[calc(100vh-145px)]">
-            <SearchPageTable
+          <div className="mt-1">
+            <DataTable
+              columns={columns}
               data={filteredData}
-              handleTableRowClick={handleShowDetails}
+              onShowDetails={handleShowDetails}
+              onPay={handlePay}
+              defaultPageSize={20}
+              height="180px"
               currentPage={
                 filterCurrentPage === undefined
                   ? currentPage
@@ -100,11 +135,6 @@ const SearchPage: NextPageWithLayout = () => {
               totalPages={
                 filterTotalPage === undefined ? totalPages : filterTotalPage
               }
-              handlePaymentClick={(invoice) => {
-                openModal("Payment");
-                const jsonInvoice = JSON.stringify(invoice);
-                localStorage.setItem("finalInvoice", jsonInvoice);
-              }}
             />
           </div>
         </div>

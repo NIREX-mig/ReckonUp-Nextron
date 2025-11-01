@@ -2,9 +2,27 @@ module.exports = {
   content: ['./renderer/pages/**/*.{js,ts,jsx,tsx}', './renderer/components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        metroBold: ['MetroBold', './renderer/fonts/Metropolis-Bold.otf'],
+        metroMedium: ['MetroMedium', './renderer/fonts/Metropolis-Medium.otf'],
+        metroRegular: ['MetroRegular', './renderer/fonts/Metropolis-Regular.ttf'],
+      },
       colors: {
-        lightbg: '#DEF3FF',
-        btn: '#3e514c',
+        lightBg: "##f3f7fa",
+        darkBg: "#141619",
+
+        lightBorder: "#8c9ac8",
+        darkBorder: "#373c42",
+
+        lightText: "#141414",
+        darkText: "#ede8f5",
+
+        btnPrimary: "#875ca5",
+        btnSecondary: "#c50900",
+
+        secondry: "#7091e6",
+        accent: "#747fb7",
+
         primary: {
           50: '#F0FDF5',
           100: '#DCFCE8',
@@ -18,7 +36,7 @@ module.exports = {
           900: '#155230',
           950: '#052E18',
         },
-        secondry: {
+        secondary: {
           50: '#f0fdfa',
           100: '#c4fcef',
           200: '#96f9e4',

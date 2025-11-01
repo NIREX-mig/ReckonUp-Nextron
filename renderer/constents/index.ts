@@ -14,3 +14,6 @@ export const MonthsChartLable = [
 ];
 
 export const WeeksChartLable = ['Mon', 'Tue', 'wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+export const appVersion = "V1.0.0"
+export const appTitle = "ReckonUp - Devloped by NIreX"

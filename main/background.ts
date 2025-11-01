@@ -931,8 +931,14 @@ ipcMain.on("fetchbydaterange", async (event, args) => {
 });
 
 // fetch Monthly invoice Event
-ipcMain.on("fetchmonthlyinvoice", async (event) => {
+ipcMain.on("fetchmonthlyinvoice", async (event, args) => {
   try {
+    const { pageNo } = await args;
+
+    const page = parseInt(pageNo) || 1; // Default to page 1
+    const limit = 20; // Default to 20 items per page
+    const skip = (page - 1) * limit; // Calculate skip value
+
     // Get current month range (1st to 1st of next month)
     const now = new Date();
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -960,9 +966,16 @@ ipcMain.on("fetchmonthlyinvoice", async (event) => {
       LEFT JOIN payments pay ON i.invoiceNo = pay.invoiceId
       WHERE i.createdAt >= ? AND i.createdAt < ?
       ORDER BY i.createdAt ASC
+      LIMIT ? OFFSET ?
     `
       )
-      .all(startDate.toISOString(), endDate.toISOString());
+      .all(startDate.toISOString(), endDate.toISOString(), limit, skip);
+
+    // count total invoices for pagination
+    const totalRow: any = dataDB
+      .prepare(`SELECT COUNT(*) AS count FROM invoices`)
+      .get();
+    const total = Number(totalRow?.count || 0);
 
     // Group by invoice
     const invoiceMap = new Map();
@@ -1032,9 +1045,15 @@ ipcMain.on("fetchmonthlyinvoice", async (event) => {
       );
     });
 
+    const data = {
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      invoices: Array.from(invoiceMap.values()),
+    };
+
     event.reply(
       "fetchmonthlyinvoice",
-      new EventResponse(true, "success.", Array.from(invoiceMap.values()))
+      new EventResponse(true, "success.", data)
     );
   } catch (err) {
     event.reply("fetchmonthlyinvoice", err);
@@ -1066,7 +1085,7 @@ ipcMain.on("getallinvoice", async (event, args) => {
     const { pageNo } = await args;
 
     const page = parseInt(pageNo) || 1; // Default to page 1
-    const limit = 40; // Default to 40 items per page
+    const limit = 20; // Default to 40 items per page
     const skip = (page - 1) * limit; // Calculate skip value
 
     // Fetch paginated invoices with joins
@@ -1220,7 +1239,14 @@ ipcMain.on("tracks", async (event) => {
     // Preparing the summary data
     const tracksData = [
       {
-        title: "Outstanding",
+        title: "Monthly Income",
+        value: `₹ ${
+          Math.round(outstandingAmountResult.outstandingAmount) || 0
+        } `,
+        icon: "FaDollarSign",
+      },
+      {
+        title: "Yearly Income",
         value: `₹ ${
           Math.round(outstandingAmountResult.outstandingAmount) || 0
         } `,
@@ -1591,10 +1617,11 @@ ipcMain.on("uploadqr", async (event, args) => {
         .prepare("UPDATE settings SET qrPath = ? WHERE id = ?")
         .run(filePath, setting.id);
     } else {
-      configDB.prepare(
+      configDB
+        .prepare(
           "INSERT INTO settings (id, qrPath, createdAt, invoicetype) VALUES (?, ?, ?, ?)"
         )
-        .run(1,filePath, new Date().toISOString(), "invoice2");
+        .run(1, filePath, new Date().toISOString(), "invoice2");
     }
 
     // Send success response
@@ -1670,7 +1697,7 @@ ipcMain.on("upload-logo", (event, args) => {
     }
 
     // Update or insert logo path in settings
-    if (setting){
+    if (setting) {
       configDB
         .prepare("UPDATE settings SET logoPath = ? WHERE id = ?")
         .run(filePath, setting.id);
@@ -1679,7 +1706,7 @@ ipcMain.on("upload-logo", (event, args) => {
         .prepare(
           "INSERT INTO settings (id, logoPath, createdAt, invoicetype) VALUES (?, ?, ?, ?)"
         )
-        .run(1,filePath, new Date().toISOString(), "invoice2");
+        .run(1, filePath, new Date().toISOString(), "invoice2");
     }
 
     // Create response and emit event
@@ -1948,21 +1975,20 @@ ipcMain.on("feedback", async (event, args) => {
 
 ipcMain.on("setInvoiceType", (event, args) => {
   try {
-    const { invoiceType } = args;
+    const { newType } = args;
 
     const setting: any = configDB
       .prepare("SELECT * FROM settings LIMIT 1")
       .get();
 
-    if (setting) {
-      configDB.prepare("UPDATE settings SET invoicetype = ?").run(invoiceType);
-    } else {
+    if (!setting) {
       configDB
         .prepare("INSERT INTO settings (id, invoicetype) VALUES (?, ?)")
-        .run(1,invoiceType);
+        .run(1, newType);
     }
+    configDB.prepare("UPDATE settings SET invoicetype = ?").run(newType);
 
-    event.reply("setInvoiceType", new EventResponse(true, "success", null));
+    event.reply("setInvoiceType", new EventResponse(true, "success", {}));
   } catch (err) {
     event.reply(
       "setInvoiceType",
@@ -1982,12 +2008,12 @@ ipcMain.on("getInvoiceType", (event) => {
         "getInvoiceType",
         new EventResponse(false, "Failed to fetch invoice type", null)
       );
-    } else {
-      event.reply(
-        "getInvoiceType",
-        new EventResponse(true, "success", setting.invoicetype)
-      );
+      return;
     }
+    event.reply(
+      "getInvoiceType",
+      new EventResponse(true, "success", setting.invoicetype)
+    );
   } catch (err) {
     event.reply(
       "getInvoiceType",

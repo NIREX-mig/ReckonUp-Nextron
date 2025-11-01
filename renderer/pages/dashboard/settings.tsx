@@ -5,17 +5,16 @@ import Head from "next/head";
 import Header from "../../components/ui/Header";
 import toast from "react-hot-toast";
 import ExportToExel from "../../components/settings/ExportToExel";
-import FeedBack from "../../components/settings/FeedBack";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Tabs from "../../components/settings/Tabs";
 import ShopDetails from "../../components/settings/ShopDetails";
 import { APiRes } from "../../types";
 import { useIsOnline } from "react-use-is-online";
-import { AiOutlineLoading } from "react-icons/ai";
 import Passwords from "../../components/settings/Passwords";
-import InvoiceSetting from "../../components/settings/InvoiceSetting";
 import Image from "next/image";
+import OtherSetting from "../../components/settings/OtherSetting";
+import { appTitle } from "../../constents";
 
 const SettingPage: NextPageWithLayout = () => {
   const { isOffline } = useIsOnline();
@@ -122,7 +121,7 @@ const SettingPage: NextPageWithLayout = () => {
     return (
       <div className=" p-1 bg-primary-50 overflow-auto rounded-xl m-2 flex flex-col items-center justify-center h-[calc(100%-16px)]">
         <Head>
-          <title>ReckonUp - Devloped by NIreX</title>
+          <title>{appTitle}</title>
         </Head>
         {!otpContainer && !sendingOTP && (
           <div className="border border-primary-950 rounded-md p-5 ">
@@ -138,12 +137,13 @@ const SettingPage: NextPageWithLayout = () => {
               <div className="mt-5 flex flex-col">
                 <Input
                   type="password"
-                  title="Password"
+                  lable="Password"
                   lableStyle="text-primary-900 sm:text-lg"
-                  otherStyle="w-[300px] mx-auto"
-                  handleChangeText={(e) => setSettingPassword(e.target.value)}
+                  otherStyle="w-[300px]"
+                  onChange={(e) => setSettingPassword(e.target.value)}
                   value={settingPassword}
                   placeholder="Enter your setting password"
+                  required
                 />
 
                 <p
@@ -157,9 +157,8 @@ const SettingPage: NextPageWithLayout = () => {
                   title={isAuthenticating ? "Submiting..." : "Submit"}
                   buttonType="submit"
                   disabled={isAuthenticating}
-                  extraClass="mt-2 sm:w-[400px]"
+                  extraClass="mt-2 py-1.5 w-[400px] bg-primary-800 text-white"
                   loading={isAuthenticating}
-                  icon={<AiOutlineLoading size={20} />}
                 />
               </div>
             </form>
@@ -178,12 +177,13 @@ const SettingPage: NextPageWithLayout = () => {
             <div className="mt-5 flex flex-col">
               <Input
                 type="text"
-                title="OTP"
-                lableStyle="text-primary-900 sm:text-lg"
+                lable="OTP"
+                lableStyle="text-primary-900 font-semibold"
                 otherStyle="w-[300px] mx-auto"
-                handleChangeText={(e) => setOtp(e.target.value)}
+                onChange={(e) => setOtp(e.target.value)}
                 value={otp}
                 placeholder="Enter 6 Digit Otp"
+                required
               />
 
               <Button
@@ -191,9 +191,8 @@ const SettingPage: NextPageWithLayout = () => {
                 buttonType="button"
                 disabled={otpSubmit}
                 handleClick={handleOtpSubmit}
-                extraClass="mt-2 sm:w-[400px]"
+                extraClass="mt-2 py-1.5 w-[400px] bg-primary-800 text-white"
                 loading={otpSubmit}
-                icon={<AiOutlineLoading size={20} />}
               />
             </div>
 
@@ -202,12 +201,12 @@ const SettingPage: NextPageWithLayout = () => {
             <div className="mt-5 flex flex-col">
               <Input
                 type="password"
-                title="New Password"
-                lableStyle={`text-primary-900 sm:text-lg ${
+                lable="New Password"
+                lableStyle={`text-primary-800 font-semibold ${
                   !otpIsValid && "opacity-40"
                 }`}
                 otherStyle="w-[300px] mx-auto disabled:border-gray-500 disabled:bg-gray-300"
-                handleChangeText={(e) =>
+                onChange={(e) =>
                   setForgotPassword((prev) => ({
                     ...prev,
                     new: e.target.value,
@@ -215,16 +214,17 @@ const SettingPage: NextPageWithLayout = () => {
                 }
                 value={forgotPassword.new}
                 disabled={!otpIsValid}
+                required
               />
 
               <Input
                 type="password"
-                title="Confirm Password"
-                lableStyle={`text-primary-900 sm:text-lg ${
+                lable="Confirm Password"
+                lableStyle={`text-primary-900 font-semibold ${
                   !otpIsValid && "opacity-40"
                 }`}
                 otherStyle="w-[300px] mx-auto mt-1 disabled:border-gray-500 disabled:bg-gray-300"
-                handleChangeText={(e) =>
+              onChange={(e) =>
                   setForgotPassword((prev) => ({
                     ...prev,
                     confirm: e.target.value,
@@ -232,6 +232,7 @@ const SettingPage: NextPageWithLayout = () => {
                 }
                 value={forgotPassword.confirm}
                 disabled={!otpIsValid}
+                required
               />
 
               <Button
@@ -239,9 +240,8 @@ const SettingPage: NextPageWithLayout = () => {
                 buttonType="button"
                 disabled={!otpIsValid}
                 handleClick={handleSubmitNewPassword}
-                extraClass="mt-2 sm:w-[400px]"
+                extraClass="mt-2 sm:w-[400px] bg-primary-800"
                 loading={passwordSubmit}
-                icon={<AiOutlineLoading size={20} />}
               />
             </div>
             <p
@@ -275,18 +275,17 @@ const SettingPage: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <div className="p-1 bg-primary-50 h-[calc(100%-16px)] rounded-xl m-2">
-        <Header title="Settings" extraStyle="mb-3" />
+      <div className="h-full">
+        <Header title="Settings" />
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <div className="bg-primary-50 border-primary-500 border text-primary-900 rounded-lg p-6 h-[calc(100%-135px)] overflow-auto">
+        <div className="bg-primary-50 border-primary-500 border text-primary-900 rounded-lg p-3 h-[calc(100%-135px)] overflow-auto">
           {activeTab === "general" && <ShopDetails />}
           {activeTab === "export" && <ExportToExel />}
           {activeTab === "passwords" && <Passwords />}
-          {activeTab === "invoice" && <InvoiceSetting />}
-          {activeTab === "feedback" && <FeedBack />}
+          {activeTab === "Others" && <OtherSetting/>}
         </div>
       </div>
     </React.Fragment>

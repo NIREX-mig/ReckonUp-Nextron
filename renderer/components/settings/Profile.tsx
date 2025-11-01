@@ -63,47 +63,50 @@ const Profile = () => {
         <div className="w-[450px] flex flex-col gap-y-2">
           <Input
             type="password"
-            title="Current Password"
+            lable="Current Password"
             value={passwords.currentPassword}
-            handleChangeText={(e) => {
+            onChange={(e) => {
               setPasswords((prev) => ({
                 ...prev,
                 currentPassword: e.target.value,
               }));
             }}
-            lableStyle="sm:text-[18px]"
+            lableStyle="font-semibold"
             otherStyle="w-[270px]"
             placeholder="current password"
+            required
           />
 
           <Input
             type="password"
-            title="New Password"
+            lable="New Password"
             value={passwords.newPassword}
-            handleChangeText={(e) => {
+            onChange={(e) => {
               setPasswords((prev) => ({
                 ...prev,
                 newPassword: e.target.value,
               }));
             }}
-            lableStyle="sm:text-[18px]"
+            lableStyle="font-semibold"
             otherStyle="w-[270px]"
             placeholder="new password"
+            required
           />
 
           <Input
             type="password"
-            title="Confirm Password"
+            lable="Confirm Password"
             value={passwords.confirmPassword}
-            handleChangeText={(e) => {
+            onChange={(e) => {
               setPasswords((prev) => ({
                 ...prev,
                 confirmPassword: e.target.value,
               }));
             }}
-            lableStyle="sm:text-[18px]"
+            lableStyle="font-semibold"
             otherStyle="w-[270px]"
             placeholder="confirm password"
+            required
           />
 
           {error && (
@@ -116,9 +119,9 @@ const Profile = () => {
             buttonType="submit"
             title={isSubmiting ? "Updating ...." : "Update Password"}
             disabled={isSubmiting}
-            extraClass="py-1.5"
+            extraClass="py-1.5 bg-primary-800 text-white w-[400px]"
             loading={isSubmiting}
-            icon={<AiOutlineLoading size={20} />}
+            
           />
         </div>
       </form>

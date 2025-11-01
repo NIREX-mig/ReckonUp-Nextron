@@ -506,7 +506,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                         <Input
                           type="date"
                           value={paymentDate}
-                          handleChangeText={(e) =>
+                          onChange={(e) =>
                             setPaymentDate(e.target.value)
                           }
                           otherStyle="disabled:text-gray-300 disabled:border-gray-300"
@@ -533,7 +533,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                     buttonType="button"
                     title="Pay or Add"
                     handleClick={handlePayAmount}
-                    extraClass="sm:w-auto mt-3"
+                    extraClass=" py-1.5 bg-primary-800 text-white mt-3"
                   />
                 </div>
                 <div>

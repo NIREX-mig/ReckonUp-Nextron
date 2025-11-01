@@ -1,20 +1,19 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { FaEye, FaEyeSlash, FaRegUser, FaUnlockAlt } from "react-icons/fa";
+import { FaRegUser, FaUnlockAlt } from "react-icons/fa";
 import { APiRes } from "../types";
 import Button from "../components/ui/Button";
 import toast, { Toaster } from "react-hot-toast";
-import { AiOutlineLoading } from "react-icons/ai";
+import Input from "../components/ui/Input";
+import { appTitle } from "../constents";
 
 export default function HomePage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
-  const [isPasswordHidden, setPasswordHidden] = useState(true);
 
   const [loginData, setLoginData] = useState({
     username: "app-admin",
@@ -52,15 +51,10 @@ export default function HomePage() {
     });
   };
 
-  const handlePasswordHidden = useCallback(
-    () => setPasswordHidden((prev) => !prev),
-    []
-  );
-
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
       <section className="bg-primary-50 h-screen flex justify-center gap-5 items-center">
         <Toaster />
@@ -88,67 +82,48 @@ export default function HomePage() {
           </p>
 
           <form onSubmit={handleSubmit} className="p-4 w-[27rem] mx-auto">
-            <div className="mb-5">
-              <label
-                htmlFor="username"
-                className="block mb-2 text-sm font-semibold  text-gray-900"
-              >
-                Username
-              </label>
-              <div className="relative">
-                <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
-                <input
-                  value={loginData.username}
-                  className="bg-primary-50 border border-primary-900 text-primary-900 rounded-md focus:outline-primary-900 block w-full p-2 font-semibold indent-8"
-                  readOnly
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-semibold text-gray-900"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <FaUnlockAlt className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
-                <input
-                  type={isPasswordHidden ? "password" : "text"}
-                  autoComplete="off"
-                  value={loginData.password}
-                  onChange={(e) =>
-                    setLoginData((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }))
-                  }
-                  autoFocus={true}
-                  className="bg-primary-50 border border-primary-900 text-primary-800 rounded-md focus:outline-primary-900 block w-full p-2 mb-3 font-semibold indent-8"
-                  placeholder="•••••••••"
-                  required
-                />
-                  <div
-                    className="text-primary-900 absolute right-3 inset-y-3 my-auto
-                  active:text-gray-600"
-                    onClick={handlePasswordHidden}
-                  >
-                    {isPasswordHidden ? <FaEye /> : <FaEyeSlash />}
-                  </div>
-              </div>
-            </div>
+            <Input
+              lable="Username"
+              lableStyle="text-black font-semibold"
+              className="w-full select-none bg-primary-50 border border-primary-900 text-primary-900 text-md font-semibold rounded-md focus:outline-primary-900 block p-2 placeholder:px-1 indent-8 mb-5"
+              name="username"
+              type="text"
+              placeholder="Enter your username"
+              value={loginData.username}
+              icon={<FaRegUser className="text-primary-900" />}
+              col
+              required
+              readOnly
+            />
+            <Input
+              lable="Username"
+              lableStyle="text-black font-semibold"
+              type="password"
+              autoComplete="off"
+              value={loginData.password}
+              onChange={(e) =>
+                setLoginData((prev) => ({
+                  ...prev,
+                  password: e.target.value,
+                }))
+              }
+              className="w-full bg-primary-50 border border-primary-900 text-primary-900 text-md font-semibold rounded-md focus:outline-primary-900 block p-2 placeholder:px-1 indent-8"
+              icon={<FaUnlockAlt className="text-primary-900" />}
+              placeholder="•••••••••"
+              col
+              required
+            />
             <Link href="/forgot" draggable="false">
               <p className=" font-semibold hover:underline inline-block mb-5 focus:outline-primary-900">
                 Forger Password
               </p>
             </Link>
             <Button
-              title={loading ? "Wait..." : "Sign In"}
+              title="Sign In"
+              extraClass="py-2 bg-primary-900 text-white hover:bg-primary-800 w-full text-lg"
               buttonType="submit"
               loading={loading}
               disabled={loading}
-              icon={<AiOutlineLoading size={20} />}
-              extraClass="py-2"
             />
           </form>
         </div>

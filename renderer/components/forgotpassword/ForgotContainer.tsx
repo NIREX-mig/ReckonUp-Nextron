@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { FaRegUser } from "react-icons/fa";
 import Button from "../ui/Button";
-import { AiOutlineLoading } from "react-icons/ai";
+import Input from "../ui/Input";
 
 const ForgotContainer = ({
   handleOnChange,
@@ -20,35 +20,26 @@ const ForgotContainer = ({
       </p>
 
       <form onSubmit={handleUsernameSubmit} className="p-4 w-[27rem] mx-auto">
-        <div className="mb-5">
-          <label
-            htmlFor="username"
-            className="block mb-2 text-sm font-semibold text-primary-900"
-          >
-            Username
-          </label>
-          <div className="relative">
-            <FaRegUser className="absolute left-3 top-2.5 h-5 w-5 text-primary-900" />
-            <input
-              type="text"
-              id="username"
-              name="username"
-              autoComplete="off"
-              value={username}
-              onChange={handleOnChange}
-              className="bg-primary-100 border border-primary-900 text-primary-900 text-md rounded-md focus:outline-primary-900 block w-full p-2 font-semibold indent-8"
-              placeholder="Username"
-              readOnly
-              required
-            />
-          </div>
-        </div>
+        <Input
+          lable="Username"
+          lableStyle="text-black font-semibold"
+          className="w-full bg-primary-50 border border-primary-900 text-primary-900 text-md font-semibold rounded-md focus:outline-primary-900 block p-2 placeholder:px-1 indent-8 mb-5"
+          name="username"
+          type="text"
+          autoComplete="off"
+          value={username}
+          onChange={handleOnChange}
+          placeholder="Username"
+          icon={<FaRegUser className="text-primary-900" />}
+          col
+          readOnly
+          required
+        />
 
         <Button
           buttonType="submit"
-          title={loading ? "Wait..." : "Next"}
-          extraClass="font-semibold py-2"
-          icon={<AiOutlineLoading size={20} />}
+          title={"Next"}
+          extraClass="font-semibold py-2 bg-primary-800 text-white w-full"
           loading={loading}
           disabled={loading}
         />

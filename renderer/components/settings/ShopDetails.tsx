@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 const ShopDetails = () => {
   const router = useRouter();
   const [logo, setlogo] = useState(undefined);
+  const [invoiceType, setInvoiceType] = useState("invoice2");
   const [logoPreview, setlogoPreview] = useState(undefined);
   const [logoUploaded, setLogoUploaded] = useState(false);
   const [settingData, setSettingData] = useState({
@@ -72,6 +73,20 @@ const ShopDetails = () => {
     reader.readAsDataURL(file);
   };
 
+  const handleInvoiceTypeChange = (e) => {
+    const newType = e.target.value;
+    setInvoiceType(newType);
+    window.ipc.send("setInvoiceType", { newType });
+
+    const setListener = (res: APiRes) => {
+      if (res?.success) {
+        toast.success("Invoice type change successfully");
+      }
+    };
+
+    window.ipc.on("setInvoiceType", setListener);
+  };
+
   useEffect(() => {
     if (!logo) {
       setlogo(undefined);
@@ -119,6 +134,18 @@ const ShopDetails = () => {
 
     getSetting();
   }, [router]);
+
+  useEffect(() => {
+    window.ipc.send("getInvoiceType", {});
+
+    const getListener = (res: APiRes) => {
+      if (res.success) {
+        setInvoiceType(res.data);
+      }
+    };
+
+    window.ipc.on("getInvoiceType", getListener);
+  }, []);
 
   return (
     <div>
@@ -259,6 +286,20 @@ const ShopDetails = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="mt-5">
+            <label className="block text-sm font-medium text-primary-800 mb-1">
+              Select Invoice Type
+            </label>
+            <select
+              value={invoiceType}
+              onChange={handleInvoiceTypeChange}
+              className="bg-primary-100 border border-primary-800 disabled:border-gray-300 text-gray-900 text-sm rounded-md focus:outline-primary-900 block py-1.5 px-5"
+            >
+              <option value="invoice1">Invoice 1</option>
+              <option value="invoice2">Invoice 2</option>
+              <option value="invoice3">Invoice 3</option>
+            </select>
           </div>
         </div>
       </div>

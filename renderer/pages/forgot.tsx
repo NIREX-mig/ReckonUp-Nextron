@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import NewPasswordContainer from "../components/forgotpassword/NewPasswordContainer";
@@ -9,12 +9,20 @@ import { APiRes } from "../types";
 import toast, { Toaster } from "react-hot-toast";
 import { useIsOnline } from "react-use-is-online";
 import Link from "next/link";
+import { appTitle } from "../constents";
+
+// Unified Step Management
+const STEPS = {
+  FORGOT: "forgot",
+  OTP: "otp",
+  NEW_PASSWORD: "newPassword",
+};
 
 export default function ForgotPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const { isOnline, isOffline, error } = useIsOnline();
+  const { isOffline } = useIsOnline();
 
   const [username, setUsername] = useState("app-admin");
   const [finalOtp, setFinalOtp] = useState("");
@@ -22,14 +30,17 @@ export default function ForgotPage() {
     newpassword: "",
     comfirmpassword: "",
   });
-  const [fpContainer, setFPContainer] = useState(true);
-  const [otpContainer, setOtpContainer] = useState(false);
-  const [npContainer, setNPContainer] = useState(false);
+
+  const [step, setStep] = useState(STEPS.FORGOT);
+
+  // Use a ref instead of localStorage for temporary token
+  const tempToken = useRef(null);
 
   const handleOnChange = (e) => {
     setUsername(e.target.value);
   };
 
+  // Function to handle the first step: send username/email
   const handleUsernameSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,18 +48,13 @@ export default function ForgotPage() {
 
     window.ipc.on("forgotpasswordemail", (res: APiRes) => {
       if (res.success) {
-        setLoading(false);
-        localStorage.setItem("tempToken", res.data);
+        tempToken.current = res.data;
         toast.success(res.message);
-        setFPContainer(false);
-        setOtpContainer(true);
-        setNPContainer(false);
+        setLoading(false);
+        setStep(STEPS.OTP);
       } else {
         setLoading(false);
         toast.error(res.message);
-        setOtpContainer(false);
-        setNPContainer(false);
-        setFPContainer(true);
       }
     });
   };
@@ -56,30 +62,51 @@ export default function ForgotPage() {
   const handleOtpSumbmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const token = localStorage.getItem("tempToken");
+
+    const token = tempToken.current;
+    if (!token) {
+      toast.error("Session expired or missing token. Start over.");
+      setStep(STEPS.FORGOT);
+      setLoading(false);
+      router.push("/home");
+      return;
+    }
+
     window.ipc.send("validateotp", { otp: finalOtp, token });
 
     window.ipc.on("validateotp", (res: APiRes) => {
       if (res.success) {
         setLoading(false);
         toast.success(res.message);
-        setFPContainer(false);
-        setOtpContainer(false);
-        setNPContainer(true);
+        setStep(STEPS.NEW_PASSWORD);
       } else {
         setLoading(false);
         toast.error(res.message);
-        setOtpContainer(true);
-        setNPContainer(false);
-        setFPContainer(false);
       }
     });
   };
 
   const handleNewPasswordSubmit = async (e) => {
     e.preventDefault();
+
+    // Client-side guard (should match NewPasswordContainer logic)
+    const passwordMatch = formData.newpassword === formData.comfirmpassword;
+
+    if (!passwordMatch) {
+      toast.error("Please ensure passwords match and meet the minimum length.");
+      return;
+    }
+
     setLoading(true);
-    const token = localStorage.getItem("tempToken");
+
+    const token = tempToken.current;
+    if (!token) {
+      toast.error("Session expired or missing token. Start over.");
+      setStep(STEPS.FORGOT);
+      setLoading(false);
+      router.push("/home");
+      return;
+    }
 
     window.ipc.send("forgotpassword", {
       newpassword: formData.newpassword,
@@ -89,17 +116,13 @@ export default function ForgotPage() {
     window.ipc.on("forgotpassword", (res: APiRes) => {
       if (res.success) {
         setLoading(false);
-        localStorage.removeItem("tempToken");
+        tempToken.current = null; // Clear token after success
         toast.success(res.message);
-        setTimeout(() => {
-          router.push("/home");
-        }, 500);
+        // Redirect logic
+        router.push("/home");
       } else {
         setLoading(false);
         toast.error(res.message);
-        setOtpContainer(false);
-        setNPContainer(true);
-        setFPContainer(false);
       }
     });
   };
@@ -108,13 +131,13 @@ export default function ForgotPage() {
     return (
       <section className="w-full h-screen flex justify-center items-center">
         <Head>
-          <title>ReckonUp - Devloped by NIreX</title>
+          width={300}
+          <title>{appTitle}</title>
         </Head>
         <div className="flex flex-col justify-center items-center gap-10">
           <Image
             src="/NoInternet.gif"
             alt="nointernetgif"
-            width={300}
             height={300}
             className=""
             draggable="false"
@@ -138,7 +161,7 @@ export default function ForgotPage() {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
       <section className="bg-primary-50 h-screen flex justify-center gap-5 items-center">
         <Toaster />
@@ -153,7 +176,7 @@ export default function ForgotPage() {
             priority
           />
         </div>
-        {fpContainer && (
+        {step === STEPS.FORGOT && (
           <ForgotContainer
             username={username}
             handleOnChange={handleOnChange}
@@ -161,7 +184,7 @@ export default function ForgotPage() {
             loading={loading}
           />
         )}
-        {otpContainer && (
+        {step === STEPS.OTP && (
           <OtpContainer
             finalOtp={finalOtp}
             setFinalOtp={setFinalOtp}
@@ -169,7 +192,7 @@ export default function ForgotPage() {
             loading={loading}
           />
         )}
-        {npContainer && (
+        {step === STEPS.NEW_PASSWORD && (
           <NewPasswordContainer
             formData={formData}
             setFormData={setFormData}

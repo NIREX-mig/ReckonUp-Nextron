@@ -41,7 +41,7 @@ const TotalPaymentsInMonth = ({ payments }) => {
     ],
   };
   return (
-    <div className=" h-full w-fullp-3 bg-primary-200">
+    <div className=" h-full w-fullp-3 bg-primary-100">
       <h2 className="text-2xl font-semibold text-primary-900 mb-3">Total Payments In year</h2>
       <Line options={options} data={data} />
     </div>

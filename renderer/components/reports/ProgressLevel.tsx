@@ -34,8 +34,8 @@ const ProgressLevel = ({ percentage }) => {
 
   return (
     <div
-      className="h-[350px] w-[300px]  border border-primary-300 rounded-lg p-5
-      bg-primary-200 mt-3"
+      className="h-[350px] w-[300px]  border border-primary-600 rounded-lg p-5
+      bg-primary-100 mt-3"
     >
       <h3 className="font-bold text-xl text-primary-900">
         Yearly Progress Level

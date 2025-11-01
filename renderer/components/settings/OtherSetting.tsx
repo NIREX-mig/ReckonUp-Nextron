@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import { APiRes } from "../../types";
-import { AiOutlineLoading } from "react-icons/ai";
+import Button from "../ui/Button";
 
-const FeedBack = () => {
+const OtherSetting = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -28,10 +27,13 @@ const FeedBack = () => {
       }
     });
   };
-
   return (
     <section>
-      <h3 className="text-xl font-semibold mb-4 text-primary-900">
+      <h2 className="text-2xl font-semibold mb-4 text-primary-900">
+        Other Settings
+      </h2>
+
+      <h3 className="text-lg font-semibold mb-4 text-primary-900">
         Write Your Feedback And Any Bugs Report
       </h3>
       <textarea
@@ -47,15 +49,14 @@ const FeedBack = () => {
         <Button
           title="Send Feedback"
           buttonType="button"
-          extraClass="mt-5 py-2"
+          extraClass="mt-5 py-2 bg-primary-800 text-white"
           handleClick={handleSendFeedback}
           loading={loading}
           disabled={loading}
-          icon={<AiOutlineLoading size={20} />}
         />
       </div>
     </section>
   );
 };
 
-export default FeedBack;
+export default OtherSetting;

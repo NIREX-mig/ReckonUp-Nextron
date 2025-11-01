@@ -19,6 +19,7 @@ import Textarea from "../../components/ui/Textarea";
 import Button from "../../components/ui/Button";
 import Switch from "../../components/ui/Switch";
 import toast from "react-hot-toast";
+import { appTitle } from "../../constents";
 
 const InvoicePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -70,6 +71,7 @@ const InvoicePage: NextPageWithLayout = () => {
     Math.round(totalAmt - paymentDetails.pay - paymentDetails.discount)
   );
 
+  // function of genrateInvoice
   const genrateInvoiceNo = async () => {
     window.ipc.send("totalcountofinvoice", {});
 
@@ -88,6 +90,7 @@ const InvoicePage: NextPageWithLayout = () => {
     });
   };
 
+  // function of add product
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
@@ -111,7 +114,7 @@ const InvoicePage: NextPageWithLayout = () => {
       weight: Number(weight),
       quantity: Number(quantity),
       rate: Number(rate),
-      purity : String(productDetails.purity),
+      purity: String(productDetails.purity),
       amount: Number(amount),
       makingCost: Number(productDetails.makingCost),
     };
@@ -125,7 +128,7 @@ const InvoicePage: NextPageWithLayout = () => {
       quantity: 0,
       name: "",
       weight: 0,
-      purity : "",
+      purity: "",
       category: "gold",
       makingCost: 0,
     });
@@ -140,6 +143,7 @@ const InvoicePage: NextPageWithLayout = () => {
     setGrossAmt(parseFloat(grossamount.toFixed(2)));
   };
 
+  // function of handle genrate invoice
   const handleGenrateInvoice = () => {
     if (customerDetails.name.length === 0) {
       toast.error("Add Customer Details!");
@@ -151,6 +155,9 @@ const InvoicePage: NextPageWithLayout = () => {
       toast.error("Add Atleast One Product!");
       return;
     }
+
+    console.log("pay amount : " + paymentDetails.pay);
+    console.log("pay amount : " + typeof paymentDetails.pay);
 
     let invoiceData: finalInvoice = {
       // customer Details
@@ -208,6 +215,7 @@ const InvoicePage: NextPageWithLayout = () => {
     });
   };
 
+  // function of handle clear invoice
   const handleClearInvoice = () => {
     setCustomerDetails({
       name: "",
@@ -240,6 +248,7 @@ const InvoicePage: NextPageWithLayout = () => {
     setProductList([]);
   };
 
+  // function of handle makingcost change
   const handleMakingCostChange = (e) => {
     const inputValue = e.target.value;
 
@@ -255,6 +264,7 @@ const InvoicePage: NextPageWithLayout = () => {
     }
   };
 
+  // function of handle makeingcost Blur
   const handleMakingCostBlur = () => {
     if (productDetails.makingCost === undefined) return; // Allow empty value
     const numericValue = Number(productDetails.makingCost);
@@ -271,6 +281,7 @@ const InvoicePage: NextPageWithLayout = () => {
     }
   };
 
+  // function of handle gst Change
   const handleGstChange = (e) => {
     const inputValue = e.target.value;
 
@@ -289,6 +300,7 @@ const InvoicePage: NextPageWithLayout = () => {
     setGSTAMT(gstInRupee);
   };
 
+  // function of handle gst blur
   const handleGstBlur = () => {
     if (GST === undefined) return; // Allow empty value
     const numericValue = Number(GST);
@@ -296,20 +308,51 @@ const InvoicePage: NextPageWithLayout = () => {
     else if (numericValue > 100.0) setGST(100);
   };
 
-  const handlePayOnBlur = () => {
-    if (paymentDetails.pay === undefined) return; // Allow empty value
+  // Function to handle changes in the payment input field
+  const handlePayChange = (e) => {
+    let value = e.target.value;
 
-    if (paymentDetails.pay <= 0) {
+    // 1. Remove non-digit characters and trim leading zeros (unless the value is '0')
+    // We only keep digits to ensure it's a number
+    value = value.replace(/[^0-9]/g, "");
+
+    // Convert the string value to a number for comparison
+    const numValue = parseInt(value, 10);
+
+    // --- Validation Logic ---
+
+    // Case 1: If the input is empty or invalid (e.g., just '-'), reset to 0
+    if (value === "" || isNaN(numValue)) {
       setPaymentDetails((prev) => ({
         ...prev,
         pay: 0,
       }));
-    } else if (paymentDetails.pay >= totalAmt) {
+      return;
+    }
+
+    // Case 2: If the value is 0, reset it to 1 (as per the requirement "only type 1 to total amount")
+    if (numValue === 0) {
       setPaymentDetails((prev) => ({
         ...prev,
-        pay: totalAmt,
+        pay: 1,
       }));
+      return;
     }
+
+    // Case 3: If the value exceeds the total amount, cap it at the max
+    if (numValue > totalAmt) {
+      setPaymentDetails((prev) => ({
+        ...prev,
+        pay: Number(totalAmt),
+      }));
+      return;
+    }
+
+    // Case 4: Value is valid (between 1 and totalAmount)
+    setPaymentDetails((prev) => ({
+      ...prev,
+      pay: Number(numValue),
+    }));
   };
 
   useEffect(() => {
@@ -320,46 +363,49 @@ const InvoicePage: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <section className="p-1 bg-primary-50 h-[calc(100%-16px)] overflow-auto rounded-xl m-2">
-        <Header title="Create Invoice" extraStyle="" />
+      <section className="min-h-screen overflow-auto">
+        <Header title="Create Invoice" />
 
         {/* Invoice Details section */}
         <section className="flex-col lg:flex-row w-full lg:h-[14rem] mt-2 flex gap-1">
-          <div className="p-2 bg-primary-50 rounded-lg border border-primary-500 lg:w-[22rem] w-full ">
+          <div className="p-2 bg-primary-50 rounded-lg border border-primary-500 min-w-[340px] ">
             <h2 className="font-bold text-primary-800">Customer Details</h2>
             {/* customer detail  */}
             <div className="py-4 w-[19rem]">
               <Input
-                title="Customer name"
-                lableStyle="text-primary-900"
-                otherStyle="mb-2"
+                lable="Customer Name:"
+                lableStyle="text-primary-900 font-semibold"
                 type="text"
+                otherStyle="mb-2"
                 value={customerDetails.name}
-                handleChangeText={(e) =>
+                onChange={(e) =>
                   setCustomerDetails((prev) => ({
                     ...prev,
                     name: e.target.value,
                   }))
                 }
                 placeholder="Customer Name"
+                required
               />
 
               <Input
-                title="Phone No"
-                lableStyle="text-primary-900"
-                otherStyle="mb-2"
+                lable="Phone No.:"
+                name="phone"
+                lableStyle="text-primary-900 font-semibold"
+                otherStyle="mb-2 "
                 type="number"
                 min="0"
                 value={customerDetails.phone}
-                handleChangeText={(e) =>
+                onChange={(e) =>
                   setCustomerDetails((prev) => ({
                     ...prev,
                     phone: e.target.value,
                   }))
                 }
                 placeholder="Phone number"
+                required
               />
 
               <Textarea
@@ -409,7 +455,7 @@ const InvoicePage: NextPageWithLayout = () => {
                         }))
                       }
                       disabled={!exchange}
-                      className="bg-primary-100 border border-primary-800 disabled:border-gray-300 text-gray-900 text-sm rounded-md focus:outline-primary-900 block py-1.5 px-5"
+                      className="bg-primary-50 border border-primary-800 disabled:border-gray-300 text-gray-900 text-sm rounded-md focus:outline-primary-900 block py-1.5 px-5"
                     >
                       <option defaultValue="select" className="p-2">
                         Select
@@ -425,9 +471,11 @@ const InvoicePage: NextPageWithLayout = () => {
 
                   {/* exchange product weight section */}
                   <Input
-                    title="Weight"
+                    lable="Weight:"
                     lableStyle={
-                      !exchange ? "text-gray-300" : "text-primary-900"
+                      !exchange
+                        ? "text-gray-300"
+                        : "text-primary-900 font-semibold"
                     }
                     otherStyle="disabled:border-gray-300 mb-2 "
                     type="number"
@@ -438,7 +486,7 @@ const InvoicePage: NextPageWithLayout = () => {
                         ? ""
                         : exchangeDetails.exchangeWeight
                     }
-                    handleChangeText={(e) =>
+                    onChange={(e) =>
                       setExchangeDetails((prev) => ({
                         ...prev,
                         exchangeWeight: e.target.valueAsNumber,
@@ -449,9 +497,11 @@ const InvoicePage: NextPageWithLayout = () => {
                   />
                   {/* exchange product percentage section  */}
                   <Input
-                    title="percentage"
+                    lable="percentage:"
                     lableStyle={
-                      !exchange ? "text-gray-300" : "text-primary-900"
+                      !exchange
+                        ? "text-gray-300"
+                        : "text-primary-900 font-semibold"
                     }
                     otherStyle="disabled:border-gray-300 mb-2 "
                     type="number"
@@ -461,7 +511,7 @@ const InvoicePage: NextPageWithLayout = () => {
                         ? ""
                         : exchangeDetails.exchangePercentage
                     }
-                    handleChangeText={(e) =>
+                    onChange={(e) =>
                       setExchangeDetails((prev) => ({
                         ...prev,
                         exchangePercentage: e.target.valueAsNumber,
@@ -474,9 +524,11 @@ const InvoicePage: NextPageWithLayout = () => {
                 {/* exchange product amount section  */}
                 <div className="flex ">
                   <Input
-                    title="Amount"
+                    lable="Amount:"
                     lableStyle={
-                      !exchange ? "text-gray-300" : "text-primary-900"
+                      !exchange
+                        ? "text-gray-300"
+                        : "text-primary-900 font-semibold"
                     }
                     otherStyle="w-[100px] disabled:border-gray-300 mb-2 "
                     type="number"
@@ -486,7 +538,7 @@ const InvoicePage: NextPageWithLayout = () => {
                         ? ""
                         : exchangeDetails.exchangeAmount
                     }
-                    handleChangeText={(e) => {
+                    onChange={(e) => {
                       setExchangeDetails((prev) => ({
                         ...prev,
                         exchangeAmount: e.target.valueAsNumber,
@@ -527,25 +579,26 @@ const InvoicePage: NextPageWithLayout = () => {
                 <div className="flex gap-4">
                   {/* product rate  */}
                   <Input
-                    title="Rate(10g)"
-                    lableStyle="text-primary-800"
-                    otherStyle="w-[120px]"
+                    lable="Rate(10g):"
+                    lableStyle="text-primary-800 font-semibold"
+                    otherStyle="w-[110px]"
                     type="number"
                     min="0"
                     value={productDetails.rate}
-                    handleChangeText={(e) =>
+                    onChange={(e) =>
                       setProductDetails((prev) => ({
                         ...prev,
-                        rate: e.target.value,
+                        rate: Number(e.target.valueAsNumber),
                       }))
                     }
                     placeholder="rate"
+                    required
                   />
 
                   {/*  product category  */}
                   <div className="flex items-center gap-2 mb-2">
                     <label
-                      htmlFor="product"
+                      htmlFor="product:"
                       className="text-sm font-medium text-primary-800"
                     >
                       Category:
@@ -558,7 +611,7 @@ const InvoicePage: NextPageWithLayout = () => {
                           category: e.target.value,
                         }))
                       }
-                      className="bg-primary-100 font-medium border border-primary-800 text-primary-900 text-sm rounded-md focus:outline-primary-900 block p-1.5"
+                      className="bg-primary-50 font-medium border border-primary-800 text-primary-900 text-sm rounded-md focus:outline-primary-900 block p-1.5"
                     >
                       <option defaultValue="gold" className="font-medium">
                         gold
@@ -571,19 +624,20 @@ const InvoicePage: NextPageWithLayout = () => {
 
                   {/* product quantity */}
                   <Input
-                    title="Quantity"
-                    lableStyle="text-primary-800"
+                    lable="Quantity:"
+                    lableStyle="text-primary-800 font-semibold"
                     otherStyle="w-[60px]"
                     type="number"
                     min="0"
                     value={productDetails.quantity}
-                    handleChangeText={(e) =>
+                    onChange={(e) =>
                       setProductDetails((prev) => ({
                         ...prev,
-                        quantity: e.target.value,
+                        quantity: Number(e.target.valueAsNumber),
                       }))
                     }
                     placeholder="Quantity"
+                    required
                   />
                 </div>
               </div>
@@ -592,41 +646,42 @@ const InvoicePage: NextPageWithLayout = () => {
               <div className="flex gap-3">
                 {/* product name  */}
                 <Input
-                  title="Product"
-                  lableStyle="text-primary-800"
-                  otherStyle="w-[200px]"
+                  lable="Product:"
+                  lableStyle="text-primary-800 font-semibold"
+                  otherStyle="w-[170px]"
                   type="text"
                   value={productDetails.name}
-                  handleChangeText={(e) =>
+                  onChange={(e) =>
                     setProductDetails((prev) => ({
                       ...prev,
                       name: e.target.value,
                     }))
                   }
                   placeholder="Product Name"
+                  required
                 />
 
                 {/* making cost */}
                 <Input
-                  title="Making Cost(in %)"
-                  lableStyle="text-primary-800"
-                  otherStyle="w-[150px] mb-2"
+                  lable="Making Cost(in %):"
+                  lableStyle="text-primary-800 font-semibold"
+                  otherStyle="w-[120px] mb-2"
                   type="number"
                   min="0"
                   value={productDetails.makingCost}
-                  handleChangeText={handleMakingCostChange}
-                  handleOnBlur={handleMakingCostBlur}
+                  onChange={handleMakingCostChange}
+                  onBlur={handleMakingCostBlur}
                 />
               </div>
               {/* purity section  */}
               <div className="flex">
                 <Input
-                  title="Purity"
-                  lableStyle="text-primary-800"
+                  lable="Purity"
+                  lableStyle="text-primary-800 font-semibold"
                   otherStyle=""
                   type="text"
                   value={productDetails.purity}
-                  handleChangeText={(e) =>
+                  onChange={(e) =>
                     setProductDetails((prev) => ({
                       ...prev,
                       purity: e.target.value,
@@ -640,16 +695,16 @@ const InvoicePage: NextPageWithLayout = () => {
                 <div className="flex justify-between">
                   {/* product weight  */}
                   <Input
-                    title="Net Weight(gram)"
-                    lableStyle="text-primary-800"
+                    lable="Net Weight(gram):"
+                    lableStyle="text-primary-800 font-semibold"
                     type="number"
                     min="0"
                     step="0.001"
                     value={productDetails.weight}
-                    handleChangeText={(e) =>
+                    onChange={(e) =>
                       setProductDetails((prev) => ({
                         ...prev,
-                        weight: e.target.value,
+                        weight: Number(e.target.valueAsNumber),
                       }))
                     }
                     placeholder="Net Weight"
@@ -658,7 +713,7 @@ const InvoicePage: NextPageWithLayout = () => {
                   {/* product add button  */}
                   <Button
                     buttonType="submit"
-                    extraClass="sm:w-auto px-8 py-2 flex gap-2 "
+                    extraClass="sm:w-auto bg-primary-800 px-8 py-2 flex gap-2 text-white "
                     icon={<MdDownloadDone size={20} />}
                     title="Add"
                   />
@@ -681,22 +736,21 @@ const InvoicePage: NextPageWithLayout = () => {
         </section>
 
         {/* total Amount section  */}
-        <section className="w-full h-[130px] p-2 border rounded-lg mt-1 flex justify-between bg-primary-50 border-primary-500">
+        <section className="w-full h-[145px] p-2 border rounded-lg mt-1 flex justify-between bg-primary-50 border-primary-500">
           {/* print and clear Button section */}
           <div className="my-auto flex gap-3 ">
             <Button
               title="Genrate Invoice"
               buttonType="button"
-              extraClass="sm:w-auto mb-2 font-medium"
+              extraClass=" py-2 bg-primary-800 text-white"
               handleClick={handleGenrateInvoice}
             />
-            <button
-              type="button"
-              onClick={handleClearInvoice}
-              className="text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:outline-none focus:ring-purple-600 font-medium rounded-md w-full sm:w-auto px-6 py-2.5 text-center flex gap-3 mb-2 active:scale-95 transition-all duration-300"
-            >
-              Clear invoice
-            </button>
+            <Button
+              buttonType="button"
+              title="Clear Invoice"
+              handleClick={handleClearInvoice}
+              extraClass="text-white bg-btnSecondary "
+            />
           </div>
 
           {/*  gst section and discount */}
@@ -704,7 +758,7 @@ const InvoicePage: NextPageWithLayout = () => {
             <div className="flex gap-2 items-center h-5 mb-2">
               <input
                 type="checkbox"
-                className="w-4 h-4 border border-primary-900 rounded bg-primary-100 focus:outline-primary-600 accent-primary-900"
+                className="w-4 h-4 border border-primary-900 rounded bg-primary-50 focus:outline-primary-600 accent-primary-900"
                 onChange={() => {
                   setcheckedbox(!checkedbox);
                   setGST(0);
@@ -727,31 +781,30 @@ const InvoicePage: NextPageWithLayout = () => {
                 >
                   GST(%):
                 </label>
-                <input
+                <Input
                   type="number"
                   min={0}
                   max={100}
                   value={GST}
                   onChange={handleGstChange}
                   onBlur={handleGstBlur}
-                  className={`bg-white border border-gray-400 text-gray-900 text-sm rounded-md block w-full py-1 px-2 mb-0.5 ${
+                  className={`border bg-primary-50 border-gray-400 rounded-md block w-full py-1 px-2 mb-0.5 ${
                     !checkedbox && "text-gray-300"
-                  } focus:outline-purple-600`}
+                  }`}
                   disabled={!checkedbox}
                 />
               </div>
             </div>
 
             <Input
-              title="Discount"
-              lableStyle="text-primary-900"
+              lable="Discount:"
+              lableStyle="text-primary-900 font-semibold"
               otherStyle=""
               type="number"
-              min="0"
               value={
-                isNaN(paymentDetails.discount) ? "" : paymentDetails.discount
+                isNaN(paymentDetails.discount) ? "0" : paymentDetails.discount
               }
-              handleChangeText={(e) => {
+              onChange={(e) => {
                 setPaymentDetails((prev) => ({
                   ...prev,
                   discount: e.target.valueAsNumber,
@@ -769,26 +822,22 @@ const InvoicePage: NextPageWithLayout = () => {
             </div>
             <div className="flex justify-between font-semibold">
               <span>Due :</span>
-              <span>{`₹ ${due}`}</span>
+              <span>{`₹ ${Number.isNaN(due) ? 0 : due}`}</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span>Discont :</span>
-              <span>{`₹ ${paymentDetails.discount}`}</span>
+              <span>{`₹ ${
+                isNaN(paymentDetails.discount) ? 0 : paymentDetails.discount
+              }`}</span>
             </div>
             <Input
-              title="Pay Amount"
-              lableStyle="text-primary-900"
+              lable="Pay Amount:"
+              lableStyle="text-primary-900 font-semibold"
               otherStyle=""
-              type="number"
-              min="0"
+              type="text"
+              inputMode="numeric"
               value={paymentDetails.pay}
-              handleChangeText={(e) => {
-                setPaymentDetails((prev) => ({
-                  ...prev,
-                  pay: e.target.value,
-                }));
-              }}
-              handleOnBlur={handlePayOnBlur}
+              onChange={handlePayChange}
               placeholder="Pay amount"
             />
           </div>

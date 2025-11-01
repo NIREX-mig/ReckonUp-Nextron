@@ -48,7 +48,7 @@ try {
       id INTEGER,
       qrPath TEXT,
       GSTNO TEXT NOT NULL DEFAULT 'Not Available',
-      invoicetype TEXT NOT NULL,
+      invoicetype TEXT NOT NULL DEFAULT 'invoice2',
       address TEXT NOT NULL DEFAULT 'Not Available',
       mobileNo TEXT NOT NULL DEFAULT 'Not Available',
       ownerName TEXT NOT NULL DEFAULT 'Not Available',

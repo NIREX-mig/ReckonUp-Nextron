@@ -14,11 +14,21 @@ publish:
   owner: Nirex-mig
   repo: ReckonUp-Nextron
   private: true
-# nsis : 
-#   oneClick: false
+win:
+  executableName: ReckonUp
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+# win: {
+#   "certificateFile": "path/to/cert.pfx",
+#   "certificatePassword": "your_password"
+# }
+
+# nsis :
 #   allowElevation: true
 #   perMachine: true
-#   allowToChangeInstallationDirectory: true
 #   installerIcon: resources/icon.ico
 #   uninstallerIcon: resources/icon.ico
 #   createDesktopShortcut: true

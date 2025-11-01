@@ -48,7 +48,7 @@ const InvoiceSatatusChart = ({ invoiceCount, paymentCount }) => {
   };
 
   return (
-    <div className="h-[50%] border border-primary-300 rounded-lg p-3 bg-primary-200">
+    <div className="h-[50%] border border-primary-600 rounded-lg p-3 bg-primary-100">
       <h2 className="text-2xl font-semibold text-primary-900 mb-3">Total Revenue In A year</h2>
       <Bar options={options} data={data} />
     </div>

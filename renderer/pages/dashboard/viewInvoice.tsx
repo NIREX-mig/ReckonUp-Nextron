@@ -8,10 +8,11 @@ import { useRouter } from "next/router";
 import { useReactToPrint } from "react-to-print";
 import { APiRes } from "../../types";
 import toast from "react-hot-toast";
-import generatePDF from "react-to-pdf";
-import Invoice2 from "../../components/invoices/invoice2";
-import html2pdf from "html2pdf.js";
-import Invoice1 from "../../components/invoices/invoice1";
+import Invoice1 from "../../components/templates/invoice1";
+import Invoice2 from "../../components/templates/Invoice2";
+import Invoice3 from "../../components/templates/invoice3";
+import Button from "../../components/ui/Button";
+import { appTitle } from "../../constents";
 
 const ViewInvoicePage: NextPageWithLayout = () => {
   const [finalInvoiceData, setFinalInvoiceData] = useState(undefined);
@@ -53,7 +54,7 @@ const ViewInvoicePage: NextPageWithLayout = () => {
     const getsettingData = () => {
       window.ipc.send("fetchsetting", { finalInvoiceData });
       window.ipc.on("fetchsetting", (res: APiRes) => {
-        console.log(res)
+        console.log(res);
         if (res.success) {
           setSetting(res.data);
         } else {
@@ -95,36 +96,38 @@ const ViewInvoicePage: NextPageWithLayout = () => {
   return (
     <React.Fragment>
       <Head>
-        <title>ReckonUp - Devloped by NIreX</title>
+        <title>{appTitle}</title>
       </Head>
-      <div className="p-6 h-full">
-        <div className="flex justify-between items-center mb-6 sticky top-6">
-          <button
-            onClick={() => {
-              localStorage.removeItem("finalInvoice");
-              router.back();
-            }}
-            className="flex items-center gap-2 text-primary-50 hover:text-primary-300"
-          >
-            <FaArrowLeft className="h-5 w-5" />
-            Go Back
-          </button>
+      <div className="h-full">
+        <div className="w-full flex justify-between mb-6 sticky top-6">
+          <div>
+            <Button
+              buttonType="button"
+              title="Go Back"
+              icon={<FaArrowLeft size={15} />}
+              handleClick={() => {
+                localStorage.removeItem("finalInvoice");
+                router.back();
+              }}
+              extraClass="bg-primary-800 text-white py-2"
+            />
+          </div>
           <div className="flex gap-4">
-            <button
-              onClick={handlePrintInvoice}
-              className="flex items-center gap-2 px-4 py-2 bg-btn/95 text-white rounded-lg hover:bg-btn active:scale-95 transition-all duration-300"
-            >
-              <FiPrinter className="h-5 w-5" />
-              Print
-            </button>
+            <Button
+              buttonType="button"
+              title="Print"
+              icon={<FiPrinter className="h-5 w-5" />}
+              handleClick={handlePrintInvoice}
+              extraClass="bg-primary-800 py-2 text-white "
+            />
 
-            <button
-              onClick={handleSaveInvoice}
-              className="flex items-center gap-2 px-4 py-2 bg-btn/95 text-white rounded-lg hover:bg-btn active:scale-95 transition-all duration-300"
-            >
-              <FaCloudDownloadAlt className="h-5 w-5" />
-              Download
-            </button>
+            <Button
+              buttonType="button"
+              title="Download"
+              icon={<FaCloudDownloadAlt className="h-5 w-5" />}
+              handleClick={handleSaveInvoice}
+              extraClass="bg-primary-800 py-2 text-white "
+            />
           </div>
         </div>
 
@@ -143,6 +146,14 @@ const ViewInvoicePage: NextPageWithLayout = () => {
 
           {setting?.invoicetype === "invoice2" && (
             <Invoice2
+              data={finalInvoiceData}
+              logo={logo}
+              qr={qr}
+              setting={setting}
+            />
+          )}
+          {setting?.invoicetype === "invoice3" && (
+            <Invoice3
               data={finalInvoiceData}
               logo={logo}
               qr={qr}

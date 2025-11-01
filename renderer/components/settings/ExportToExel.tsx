@@ -148,7 +148,7 @@ const ExportToExel = () => {
 
   return (
     <section>
-      <h2 className="text-2xl font-bold mb-4 text-primary-900 ">
+      <h2 className="text-2xl font-bold mb-2 text-primary-900 ">
         Export Invoices in Excal
       </h2>
       <div className="w-full h-full">
@@ -156,7 +156,7 @@ const ExportToExel = () => {
           <label className=" flex flex-col font-medium text-primary-700 mb-1">
             <span className="my-2">
               {
-                "Note : Invoice Details, Customer Details, Exchange Details these data are Exportes"
+                "Note : Invoice Details, Customer Details, Exchange Details these data are Exportes In Excel Formate."
               }
             </span>
           </label>
@@ -379,10 +379,9 @@ const ExportToExel = () => {
         <Button
           buttonType="button"
           title="Export to Excel"
-          extraClass="w-auto py-2"
+          extraClass="w-auto py-2 bg-primary-800 text-white"
           handleClick={handleExportToExcel}
           loading={loading}
-          icon={<AiOutlineLoading size={20} />}
         />
       </div>
     </section>

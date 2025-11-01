@@ -1,19 +1,16 @@
-import Link from 'next/link';
-import React from 'react';
-import { MdPendingActions } from 'react-icons/md';
+import Link from "next/link";
+import React from "react";
+import { MdPendingActions } from "react-icons/md";
 
-type Header = {
+interface HeaderProps {
   title: string;
-  extraStyle?: string;
-};
+}
 
-const Header = ({ title, extraStyle }: Header) => {
+const Header = ({ title }: HeaderProps) => {
   return (
-    <div
-      className={`sticky  top-1  z-[100] bg-primary-800  rounded-lg border border-primary-900 flex items-center justify-between ${extraStyle}`}
-    >
-      <h1 className="text-2xl font-bold text-primary-100 px-3 py-3">{title}</h1>
-    </div>
+    <h1 className="text-[23px] tracking-wider font-bold text-primary-800 my-3">
+      {title}
+    </h1>
   );
 };
 
