@@ -9,7 +9,7 @@ import { useReactToPrint } from "react-to-print";
 import { APiRes } from "../../types";
 import toast from "react-hot-toast";
 import Invoice1 from "../../components/templates/invoice1";
-import Invoice2 from "../../components/templates/Invoice2";
+import Invoice2 from "../../components/templates/invoice2";
 import Invoice3 from "../../components/templates/invoice3";
 import Button from "../../components/ui/Button";
 import { appTitle } from "../../constents";
