@@ -160,11 +160,11 @@ const DataTable = ({
                     </td>
                     <td className="px-4 font-medium whitespace-nowrap">
                       {row?.dueAmount === 0 ? (
-                        <span className="text-sm font-semibold px-3 rounded-full py-0.5 bg-green-500 text-white uppercase">
+                        <span className="text-xs font-semibold px-3 rounded-full py-0.5 bg-green-500 text-white uppercase">
                           Paid
                         </span>
                       ) : (
-                        <span className="text-sm font-semibold px-3 rounded-full py-0.5  bg-red-600 text-white uppercase">
+                        <span className="text-xs font-semibold px-3 rounded-full py-0.5  bg-red-600 text-white uppercase">
                           due
                         </span>
                       )}

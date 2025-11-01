@@ -127,6 +127,21 @@ export default function ForgotPage() {
     });
   };
 
+  const handleResendOtp = async (e) => {
+    e.preventDefault();
+    tempToken.current = null;
+    window.ipc.send("forgotpasswordemail", { username });
+
+    window.ipc.on("forgotpasswordemail", (res: APiRes) => {
+      if (res.success) {
+        tempToken.current = res.data;
+        toast.success(res.message);
+      } else {
+        toast.error(res.message);
+      }
+    });
+  };
+
   if (isOffline) {
     return (
       <section className="w-full h-screen flex justify-center items-center">
@@ -139,7 +154,7 @@ export default function ForgotPage() {
             src="/NoInternet.gif"
             alt="nointernetgif"
             height={300}
-            className=""
+            width={300}
             draggable="false"
             priority
           />
@@ -149,7 +164,7 @@ export default function ForgotPage() {
           <Link
             href="/home"
             draggable="false"
-            className="px-7 py-2 bg-btn rounded-full text-white font-semibold"
+            className="px-7 py-2 bg-btn rounded-full bg-primary-800 text-white font-semibold"
           >
             Go Back
           </Link>
@@ -186,7 +201,7 @@ export default function ForgotPage() {
         )}
         {step === STEPS.OTP && (
           <OtpContainer
-            finalOtp={finalOtp}
+            resendOtp={handleResendOtp}
             setFinalOtp={setFinalOtp}
             handleOtpSumbmit={handleOtpSumbmit}
             loading={loading}
