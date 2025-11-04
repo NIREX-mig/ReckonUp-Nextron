@@ -16,11 +16,11 @@ interface DataRow {
   invoiceNo?: string;
   name?: string;
   address?: string;
-  phone?: string;
   createdAt?: string;
   totalAmount?: number;
   discount?: number;
   dueAmount?: number;
+  status?: string;
   payments?: Payment[];
 }
 
@@ -144,9 +144,6 @@ const DataTable = ({
                       {row?.address}
                     </td>
                     <td className="px-4 font-medium whitespace-nowrap">
-                      {row?.phone}
-                    </td>
-                    <td className="px-4 font-medium whitespace-nowrap">
                       {moment(row?.createdAt).format("MMM DD, YYYY")}
                     </td>
                     <td className="px-4 font-medium whitespace-nowrap">
@@ -155,8 +152,13 @@ const DataTable = ({
                     <td className="px-4 font-medium whitespace-nowrap">
                       ₹{totalPaid}
                     </td>
+                    {Discount && (
+                      <td className="px-4 font-medium whitespace-nowrap">
+                        ₹{row?.discount}
+                      </td>
+                    )}
                     <td className="px-4 font-medium whitespace-nowrap">
-                      ₹{row?.discount}
+                      ₹{row?.dueAmount}
                     </td>
                     <td className="px-4 font-medium whitespace-nowrap">
                       {row?.dueAmount === 0 ? (
@@ -169,11 +171,7 @@ const DataTable = ({
                         </span>
                       )}
                     </td>
-                    {Discount && (
-                      <td className="px-4 font-medium whitespace-nowrap">
-                        ₹{row?.dueAmount}
-                      </td>
-                    )}
+
                     <td className="p-1 flex">
                       {details && (
                         <Button

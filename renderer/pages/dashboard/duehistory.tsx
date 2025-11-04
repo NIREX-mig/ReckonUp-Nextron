@@ -18,7 +18,6 @@ interface InvoicePrameter {
   invoiceNo: string;
   name: string;
   address: string;
-  phone: string;
   createdAt: string;
   totalAmount: number;
   totalPaid: number;
@@ -43,13 +42,12 @@ const DueHistoryPage: NextPageWithLayout = () => {
     { key: "invoiceNo", label: "Invoice No" },
     { key: "name", label: "Name" },
     { key: "address", label: "Address" },
-    { key: "phone", label: "Phone" },
     { key: "createdAt", label: "Date" },
     { key: "totalAmount", label: "Total" },
     { key: "totalPaid", label: "Total Paid" },
     { key: "discount", label: "Discount" },
-    { key: "status", label: "Status" },
     { key: "dueAmount", label: "Dues" },
+    { key: "status", label: "Status" },
   ];
 
   const yearOptions = useMemo(() => {

@@ -16,12 +16,12 @@ interface InvoicePrameter {
   invoiceNo: string;
   name: string;
   address: string;
-  phone: string;
   createdAt: string;
   totalAmount: number;
   totalPaid: number;
-  status: string;
+  discount: number;
   dueAmount: number;
+  status: string;
 }
 
 const SearchPage: NextPageWithLayout = () => {
@@ -40,12 +40,12 @@ const SearchPage: NextPageWithLayout = () => {
     { key: "invoiceNo", label: "Invoice No" },
     { key: "name", label: "Name" },
     { key: "address", label: "Address" },
-    { key: "phone", label: "Phone" },
     { key: "createdAt", label: "Date" },
     { key: "totalAmount", label: "Total" },
     { key: "totalPaid", label: "Total Paid" },
-    { key: "status", label: "Status" },
+    { key: "discount", label: "Discount" },
     { key: "dueAmount", label: "Dues" },
+    { key: "status", label: "Status" },
   ];
 
   const handleShowDetails = (invoice: InvoicePrameter): void => {
@@ -135,6 +135,7 @@ const SearchPage: NextPageWithLayout = () => {
               totalPages={
                 filterTotalPage === undefined ? totalPages : filterTotalPage
               }
+              Discount
             />
           </div>
         </div>
