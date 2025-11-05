@@ -1223,52 +1223,58 @@ ipcMain.on("tracks", async (event) => {
     `);
     const totalDueInvoicesResult: any = totalDueInvoicesStmt.get("Due Amount");
 
-    // Calculate total outstanding amount
-    const outstandingAmountStmt = dataDB.prepare(`
-      SELECT SUM(i.totalAmount - COALESCE(p.totalPaid, 0)) AS outstandingAmount
-      FROM invoices i
-      LEFT JOIN (
-        SELECT invoiceId, SUM(paidAmount) AS totalPaid
-        FROM payments
-        GROUP BY invoiceId
-      ) p ON i.invoiceNo = p.invoiceId
-      WHERE (i.totalAmount - COALESCE(p.totalPaid, 0)) > 0;
-    `);
-    const outstandingAmountResult: any = outstandingAmountStmt.get();
+    // // Calculate monthly outstanding amount
+    // const monthlyIncomeStmt = dataDB.prepare(`
+    //   SELECT 
+    //     strftime('%Y-%m', i.date) AS month,
+    //     SUM(i.totalAmount) AS totalInvoiceAmount,
+    //     SUM(IFNULL(p.totalPaid, 0)) AS totalPaidAmount,
+    //     SUM(i.totalAmount - IFNULL(p.totalPaid, 0)) AS outstandingAmount
+    //   FROM invoices AS i
+    //   LEFT JOIN (
+    //     SELECT 
+    //       invoiceId, 
+    //       SUM(paidAmount) AS totalPaid
+    //     FROM payments
+    //     GROUP BY invoiceId
+    //   ) AS p 
+    //   ON i.invoiceNo = p.invoiceId
+    //   GROUP BY strftime('%Y-%m', i.date)
+    //   ORDER BY month DESC;
+    // `);
+    // const monthlyIncomeResult: any = monthlyIncomeStmt.all();
+
+    // // Calculate yearly income (total paid per year)
+    // const yearlyIncomeStmt = dataDB.prepare(`
+    //     SELECT 
+    //       strftime('%Y', i.date) AS year,
+    //       SUM(IFNULL(p.totalPaid, 0)) AS totalIncome,
+    //       SUM(i.totalAmount) AS totalInvoiceAmount,
+    //       SUM(i.totalAmount - IFNULL(p.totalPaid, 0)) AS outstandingAmount
+    //     FROM invoices AS i
+    //     LEFT JOIN (
+    //       SELECT 
+    //         invoiceId, 
+    //         SUM(paidAmount) AS totalPaid
+    //       FROM payments
+    //       GROUP BY invoiceId
+    //     ) AS p 
+    //     ON i.invoiceNo = p.invoiceId
+    //     GROUP BY strftime('%Y', i.date)
+    //     ORDER BY year DESC;
+    //   `);
+    // const yearlyIncomeResult: any = yearlyIncomeStmt.all();
 
     // Preparing the summary data
-    const tracksData = [
-      {
-        title: "Monthly Income",
-        value: `₹ ${
-          Math.round(outstandingAmountResult.outstandingAmount) || 0
-        } `,
-        icon: "FaDollarSign",
-      },
-      {
-        title: "Yearly Income",
-        value: `₹ ${
-          Math.round(outstandingAmountResult.outstandingAmount) || 0
-        } `,
-        icon: "FaDollarSign",
-      },
-      {
-        title: "Total Invoices",
-        value: `${totalInvoicesResult.totalInvoices || 0}`,
-        icon: "FiFileText",
-      },
-      {
-        title: "Paid Inovices",
-        value: `${totalPaidInvoicesResult.totalPaidInvoices || 0}`,
-        icon: "MdPaid",
-      },
-      {
-        title: "Due Invoices",
-        value: `${totalDueInvoicesResult.totalDueInvoices || 0}`,
-        icon: "IoMdWarning",
-      },
-    ];
-
+    const tracksData = {
+      monthlyincome : 0,
+      yearlyIncome : 0,
+      totalInvoices : totalInvoicesResult.totalInvoices,
+      paidInvoices : totalPaidInvoicesResult.totalPaidInvoices,
+      dueInvoices : totalDueInvoicesResult.totalDueInvoices
+    } 
+    
+    
     // create response and emmit event
     const response = new EventResponse(true, "Success", tracksData);
     event.sender.send("tracks", response);

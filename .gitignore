@@ -14,3 +14,4 @@ dist
 /script/signHooks.js
 /cert/*
 .env
+.github/*

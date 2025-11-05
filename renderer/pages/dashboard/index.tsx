@@ -2,10 +2,10 @@ import React, { ReactElement, useEffect, useState } from "react";
 import RootLayout from "../../components/rootLayout";
 import type { NextPageWithLayout } from "../_app";
 import Head from "next/head";
-import { FaDollarSign } from "react-icons/fa";
 import { FiFileText } from "react-icons/fi";
 import { MdPaid } from "react-icons/md";
 import { IoMdWarning } from "react-icons/io";
+import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/ui/Modal";
 import { APiRes } from "../../types";
@@ -13,18 +13,6 @@ import Header from "../../components/ui/Header";
 import toast from "react-hot-toast";
 import DataTable from "../../components/ui/DataTable";
 import { appTitle } from "../../constents";
-
-const iconMap: { [key: string]: JSX.Element } = {
-  FaDollarSign: <FaDollarSign size={15} className="text-gray-800" />,
-  MdPaid: <MdPaid size={15} className="text-gray-800" />,
-  IoMdWarning: <IoMdWarning size={15} className="text-gray-800" />,
-  FiFileText: <FiFileText size={15} className="text-gray-800" />,
-};
-
-const ServerIconRenderer: React.FC<{ iconName: string }> = ({ iconName }) => {
-  const Icon = iconMap[iconName];
-  return Icon;
-};
 
 interface InvoicePrameter {
   invoiceNo: string;
@@ -50,28 +38,7 @@ const DashboardPage: NextPageWithLayout = () => {
 
   const [selectedOption, setSelectedOption] = useState("invoiceNo");
 
-  const [stats, setStats] = useState([
-    {
-      title: "Outstanding",
-      value: "₹0",
-      icon: "FaDollarSign",
-    },
-    {
-      title: "Total Invoices",
-      value: "0",
-      icon: "FiFileText",
-    },
-    {
-      title: "Paid Inovices",
-      value: "0",
-      icon: "MdPaid",
-    },
-    {
-      title: "Due Invoices",
-      value: "0",
-      icon: "IoMdWarning",
-    },
-  ]);
+  const [stats, setStats] = useState(undefined);
 
   const columns = [
     { key: "invoiceNo", label: "Invoice No" },
@@ -182,23 +149,81 @@ const DashboardPage: NextPageWithLayout = () => {
         />
         <Header title="Dashboard" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mb-2">
-          {stats.map((stat) => (
-            <div key={stat.title} className="rounded-lg ">
-              <div className="rounded-lg border border-primary-800">
-                <div className="flex flex-col px-4 py-2">
-                  <div className="flex items-center justify-center gap-1">
-                    <ServerIconRenderer iconName={stat.icon} />
-                    <h3 className="text-gray-800 text-medium font-semibold">
-                      {stat.title}
-                    </h3>
-                  </div>
-                  <p className="text-2xl font-semibold text-center text-primary-800">
-                    {stat.value}
-                  </p>
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <RiMoneyRupeeCircleLine size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Monthly Income
+                  </h3>
                 </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {`₹${stats?.monthlyincome || 0}`}
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <RiMoneyRupeeCircleLine size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Yearly Income
+                  </h3>
+                </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {`₹${stats?.yearlyIncome || 0}`}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <FiFileText size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Total Invoices
+                  </h3>
+                </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {stats?.totalInvoices || 0}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <MdPaid size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Paid Inovices
+                  </h3>
+                </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {stats?.paidInvoices || 0}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <IoMdWarning size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Due Invoices
+                  </h3>
+                </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {stats?.dueInvoices || 0}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="rounded-lg bg-primary-50 mb-1 border border-primary-800">
