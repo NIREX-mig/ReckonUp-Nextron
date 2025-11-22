@@ -13,6 +13,7 @@ import Invoice2 from "../../components/templates/invoice2";
 import Invoice3 from "../../components/templates/invoice3";
 import Button from "../../components/ui/Button";
 import { appTitle } from "../../constents";
+import Invoice4 from "../../components/templates/invoice4";
 
 const ViewInvoicePage: NextPageWithLayout = () => {
   const [finalInvoiceData, setFinalInvoiceData] = useState(undefined);
@@ -154,6 +155,14 @@ const ViewInvoicePage: NextPageWithLayout = () => {
           )}
           {setting?.invoicetype === "invoice3" && (
             <Invoice3
+              data={finalInvoiceData}
+              logo={logo}
+              qr={qr}
+              setting={setting}
+            />
+          )}
+          {setting?.invoicetype === "invoice4" && (
+            <Invoice4
               data={finalInvoiceData}
               logo={logo}
               qr={qr}

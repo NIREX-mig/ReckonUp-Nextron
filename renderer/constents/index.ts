@@ -1,19 +1,37 @@
 export const MonthsChartLable = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
-export const WeeksChartLable = ['Mon', 'Tue', 'wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+export const WeeksChartLable = [
+  "Mon",
+  "Tue",
+  "wed",
+  "Thu",
+  "Fri",
+  "Sat",
+  "Sun",
+];
 
-export const appVersion = "V1.0.1"
-export const appTitle = "ReckonUp - Devloped by NIreX"
+export const appVersion = "V1.0.0";
+export const appTitle = "ReckonUp - Devloped by NIreX";
+
+export function preventkeyEnvent(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    e.preventDefault();
+  }
+}
+
+export function preventWeelEvent(e: React.WheelEvent<HTMLInputElement>) {
+  (e.target as HTMLInputElement).blur();
+}

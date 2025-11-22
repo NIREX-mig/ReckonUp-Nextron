@@ -299,6 +299,7 @@ const ShopDetails = () => {
               <option value="invoice1">Invoice 1</option>
               <option value="invoice2">Invoice 2</option>
               <option value="invoice3">Invoice 3</option>
+              <option value="invoice4">Invoice 4</option>
             </select>
           </div>
         </div>

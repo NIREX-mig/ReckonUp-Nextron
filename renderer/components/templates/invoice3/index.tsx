@@ -2,11 +2,9 @@ import moment from "moment";
 import Image from "next/image";
 import React from "react";
 
-
-
 const Field = ({ label, value, className = "" }) => (
-  <div className={`flex items-center border border-gray-600 h-8 ${className}`}>
-    <span className="text-[12px]  bg-gray-100 px-2 h-full flex items-center border-r border-gray-600">
+  <div className={`flex items-center border border-black h-8 ${className}`}>
+    <span className="text-[12px]  bg-gray-100 px-2 h-full flex items-center border-r border-black">
       {label}
     </span>
     <input
@@ -25,7 +23,6 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
     (sum, history) => sum + history.paidAmount,
     0
   );
-
 
   return (
     <div className="bg-white p-1 flex justify-center">
@@ -65,7 +62,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Key Detail Fields (Row 1) --- */}
-        <div className="grid grid-cols-2 text-xs border-b border-black">
+        <div className="grid grid-cols-2 text-xs px-1">
           <Field
             label="Invoice No. :"
             value={data?.invoiceNo}
@@ -103,38 +100,38 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
         <div className="font-bold border-b border-black">
           <table className="w-full table-fixed text-black border-collapse h-8">
             <thead>
-              <tr className="bg-gray-100 font-semibold text-xs border-b border-black/50">
+              <tr className="bg-gray-100 font-semibold text-xs border-b border-black">
                 <th
                   rowSpan={2}
-                  className="w-10 p-1 border-r border-black/50 text-left"
+                  className="w-10 p-1 border-r border-black text-left"
                 >
                   Sr. No.
                 </th>
 
                 <th
                   rowSpan={2}
-                  className="w-48 p-1 border-r border-black/50 text-left"
+                  className="w-48 p-1 border-r border-black text-left"
                 >
                   {" "}
                   Item Name & Description
                 </th>
 
-                <th rowSpan={2} className="p-1 border-r border-black/50">
+                <th rowSpan={2} className="p-1 border-r border-black">
                   Category
                 </th>
-                <th rowSpan={2} className="w-16 p-1 border-r border-black/50">
+                <th rowSpan={2} className="w-16 p-1 border-r border-black">
                   Purity.
                 </th>
-                <th rowSpan={2} className="p-1 border-r border-black/50">
+                <th rowSpan={2} className="p-1 border-r border-black">
                   Rate/Gm
                 </th>
-                <th rowSpan={2} className="p-1 border-r border-black/50">
+                <th rowSpan={2} className="p-1 border-r border-black">
                   Wt.(gms)
                 </th>
-                <th rowSpan={2} className="p-1 border-r border-black/50">
+                <th rowSpan={2} className="p-1 border-r border-black">
                   Quantity
                 </th>
-                <th rowSpan={2} className="w-20 p-1 border-r border-black/50">
+                <th rowSpan={2} className="w-20 p-1 border-r border-black">
                   Making(%)
                 </th>
 
@@ -147,34 +144,34 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
               {data?.products?.map((product, index) => {
                 return (
                   <tr key={index} className="">
-                    <td className="w-10 text-center text-xs p-1 border-r border-dashed border-black/50 align-top">
+                    <td className="w-10 text-center text-xs p-1 border-r border-black align-top">
                       {index + 1}
                     </td>
-                    <td className="w-48 capitalize text-left text-xs p-1 border-r border-dashed border-black/50">
+                    <td className="w-48 capitalize text-left text-xs p-1 border-r border-black">
                       {product?.name}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-dashed border-black/50 capitalize">
+                    <td className="text-right text-xs p-1 border-r border-black capitalize">
                       {product?.category}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-dashed border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product?.purity === "" || product?.purity === null
                         ? " - "
                         : product.purity}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-dashed border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product.rate}
                     </td>
-                    <td className=" w-16 text-center text-xs p-1 border-r border-dashed border-black/50">
+                    <td className=" w-16 text-center text-xs p-1 border-r border-black">
                       {product.weight}
                     </td>
-                    <td className=" text-center text-xs p-1 border-r border-dashed border-black/50">
+                    <td className=" text-center text-xs p-1 border-r border-black">
                       {product.quantity}
                     </td>
-                    <td className=" text-center text-xs p-1 border-r border-dashed border-black/50">
+                    <td className=" text-center text-xs p-1 border-r border-black">
                       {product.makingCost}
                     </td>
-                    <td className=" text-center text-xs p-1 border-r border-dashed border-black/50">
-                      {`₹ ${product.amount}`}
+                    <td className=" text-center text-xs p-1">
+                      {product.amount}
                     </td>
                   </tr>
                 );
@@ -183,18 +180,15 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
               {data?.products?.length < 6 &&
                 Array.from({ length: 6 - data?.products?.length }).map(
                   (_, i) => (
-                    <tr
-                      key={`pad-${i}`}
-                      className="h-6"
-                    >
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
-                      <td className="border-r border-dashed border-black/50"></td>
+                    <tr key={`pad-${i}`} className="h-6">
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
                       <td></td>
                     </tr>
                   )
@@ -216,7 +210,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                 className="w-[100px] h-[100px]"
               />
             </div>
-            <div className="border-l border-black/50 p-2">
+            <div className="border-l border-black p-2">
               <div className="flex justify-between">
                 <span className="font-semibold">Category:</span>
                 <span className="font-semibold">
@@ -236,9 +230,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
               <div className="flex justify-between mt-3">
                 <span className="font-semibold">Amount:</span>
                 <span className="font-semibold">
-                  {`₹${
-                    data?.exchangeAmount === null ? 0 : data?.exchangeAmount
-                  }`}
+                  {data?.exchangeAmount === null ? 0 : data?.exchangeAmount}
                 </span>
               </div>
             </div>
@@ -247,25 +239,27 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
           {/* Right Column (Summary Totals) */}
           <div className="col-span-2">
             <div className="p-1 space-y-0.5">
-              <div className="flex justify-between border-b border-gray-300">
+              <div className="flex justify-between border-b border-black">
                 <span className="text-[12px] font-semibold">Sub. Total</span>
-                <span className="font-semibold">{`₹${data?.grossAmount}`}</span>
+                <span className="font-semibold">{data?.grossAmount}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-[12px] font-semibold">{`Gst Amt. (${data?.gstPercentage}%)`}</span>
                 <span className="font-semibold">{data?.gstAmount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px] font-semibold">Additional Discount:</span>
-                <span className="font-semibold">{`₹${data?.discount}`}</span>
+                <span className="text-[12px] font-semibold">
+                  Additional Discount:
+                </span>
+                <span className="font-semibold">{data?.discount}</span>
               </div>
               <div className="flex justify-between font-bold border-t-2 border-black pt-1">
                 <span className="text-xs">Grand Total</span>
-                <span className="text-xs">{`₹${finalAmt}`}</span>
+                <span className="text-xs">{finalAmt}</span>
               </div>
               <div className="flex justify-between border-t border-black pt-0.5">
                 <span className="text-[12px] font-bold">Payment Received</span>
-                <span className="font-semibold">{`₹${totalPaidAmt}`}</span>
+                <span className="font-semibold">{totalPaidAmt}</span>
               </div>
             </div>
           </div>
@@ -274,13 +268,13 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
         {/* --- Signatures --- */}
         <div className="grid grid-cols-2 text-xs">
           <div className="p-2 border-r border-black h-16 relative">
-            <div className="absolute bottom-2 left-2 right-2 text-center border-t border-black/50 pt-1">
+            <div className="absolute bottom-2 left-2 right-2 text-center border-t border-black pt-1">
               Customer's Signature
             </div>
           </div>
           <div className="p-2 h-16 relative">
             <div className="absolute bottom-2 left-2 right-2 text-center opacity-50">
-              <div className="border-t border-black/50 pt-1 text-[10px]">
+              <div className="border-t border-black pt-1 text-[10px]">
                 Authorized Signature
               </div>
               <div className="text-[10px] font-bold mt-1">For Shop Only</div>

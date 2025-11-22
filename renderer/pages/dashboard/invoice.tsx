@@ -19,7 +19,7 @@ import Textarea from "../../components/ui/Textarea";
 import Button from "../../components/ui/Button";
 import Switch from "../../components/ui/Switch";
 import toast from "react-hot-toast";
-import { appTitle } from "../../constents";
+import { appTitle, preventkeyEnvent, preventWeelEvent } from "../../constents";
 
 const InvoicePage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -396,6 +396,8 @@ const InvoicePage: NextPageWithLayout = () => {
                 lableStyle="text-primary-900 font-semibold"
                 otherStyle="mb-2 "
                 type="number"
+                onWheel={preventWeelEvent}
+                onKeyDown={preventkeyEnvent}
                 min="0"
                 value={customerDetails.phone}
                 onChange={(e) =>
@@ -479,6 +481,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     }
                     otherStyle="disabled:border-gray-300 mb-2 "
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     step="0.01"
                     value={
@@ -505,6 +509,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     }
                     otherStyle="disabled:border-gray-300 mb-2 "
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     value={
                       isNaN(exchangeDetails.exchangePercentage)
@@ -532,6 +538,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     }
                     otherStyle="w-[100px] disabled:border-gray-300 mb-2 "
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     value={
                       isNaN(exchangeDetails.exchangeAmount)
@@ -583,6 +591,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     lableStyle="text-primary-800 font-semibold"
                     otherStyle="w-[110px]"
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     value={productDetails.rate}
                     onChange={(e) =>
@@ -628,6 +638,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     lableStyle="text-primary-800 font-semibold"
                     otherStyle="w-[60px]"
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     value={productDetails.quantity}
                     onChange={(e) =>
@@ -667,6 +679,8 @@ const InvoicePage: NextPageWithLayout = () => {
                   lableStyle="text-primary-800 font-semibold"
                   otherStyle="w-[120px] mb-2"
                   type="number"
+                  onWheel={preventWeelEvent}
+                  onKeyDown={preventkeyEnvent}
                   min="0"
                   value={productDetails.makingCost}
                   onChange={handleMakingCostChange}
@@ -698,6 +712,8 @@ const InvoicePage: NextPageWithLayout = () => {
                     lable="Net Weight(gram):"
                     lableStyle="text-primary-800 font-semibold"
                     type="number"
+                    onWheel={preventWeelEvent}
+                    onKeyDown={preventkeyEnvent}
                     min="0"
                     step="0.001"
                     value={productDetails.weight}
@@ -783,6 +799,8 @@ const InvoicePage: NextPageWithLayout = () => {
                 </label>
                 <Input
                   type="number"
+                  onWheel={preventWeelEvent}
+                  onKeyDown={preventkeyEnvent}
                   min={0}
                   max={100}
                   value={GST}
@@ -801,6 +819,8 @@ const InvoicePage: NextPageWithLayout = () => {
               lableStyle="text-primary-900 font-semibold"
               otherStyle=""
               type="number"
+              onWheel={preventWeelEvent}
+              onKeyDown={preventkeyEnvent}
               value={
                 isNaN(paymentDetails.discount) ? "0" : paymentDetails.discount
               }

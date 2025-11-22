@@ -1,8 +1,8 @@
 {
   "private": true,
   "name": "reckonup",
-  "description": "ReckonUp-V1.0.1 - Invoice Management Software",
-  "version": "1.0.1",
+  "description": "ReckonUp-V1.0.0 - Invoice Management Software",
+  "version": "1.0.0",
   "author": "NIreX",
   "main": "app/background.js",
   "scripts": {

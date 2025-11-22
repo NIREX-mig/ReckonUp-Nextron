@@ -23,7 +23,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
       >
         {label}
       </span>
-      <span className={`text-[11px] ${isBold ? "font-bold" : "font-semibold"}`}>
+      <span className={`text-[12px] ${isBold ? "font-bold" : "font-semibold"}`}>
         {value}
       </span>
     </div>
@@ -163,36 +163,36 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                 return (
                   <tr
                     key={index}
-                    className="border-b font-semibold border-black/50 h-8"
+                    className="border-b font-semibold border-black h-8"
                   >
-                    <td className="w-10 text-center text-xs p-1 border-r border-black/50">
+                    <td className="w-10 text-center text-xs p-1 border-r border-black">
                       {index + 1}.
                     </td>
-                    <td className="w-48 capitalize text-left text-xs p-1 border-r border-black/50 font-medium">
+                    <td className="w-48 capitalize text-left text-xs p-1 border-r border-black font-medium">
                       {product?.name}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product?.category}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product?.purity === "" || product?.purity === null
                         ? " - "
                         : product.purity}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product.rate}
                     </td>
-                    <td className="w-16 text-center text-[10px] p-1 border-r border-black/50">
+                    <td className="w-16 text-center text-[12px] p-1 border-r border-black">
                       {product.weight}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product.quantity}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
+                    <td className="text-right text-xs p-1 border-r border-black">
                       {product.makingCost}
                     </td>
-                    <td className="text-right text-xs p-1 border-r border-black/50">
-                      {`₹ ${product.amount}`}
+                    <td className="text-right text-xs p-1">
+                      {product.amount}
                     </td>
                   </tr>
                 );
@@ -203,16 +203,16 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                   (_, i) => (
                     <tr
                       key={`pad-${i}`}
-                      className="h-6 border-b border-black/50"
+                      className="h-6 border-b border-black"
                     >
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
-                      <td className="border-r border-black/50"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
+                      <td className="border-r border-black"></td>
                       <td></td>
                     </tr>
                   )
@@ -222,7 +222,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         </div>
 
         {/* --- Exchange and Tax Totals Block --- */}
-        <div className="grid grid-cols-3 border-t border-black text-xs">
+        <div className="grid grid-cols-3 text-xs">
           {/* Column 1: Tex Calculation and payment QR */}
           <div className="border-r border-black grid grid-cols-2">
             <div className="flex justify-center items-center">
@@ -240,7 +240,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
               <p className="text-[12px] font-semibold">SGST %: 1.5%</p>
               <TaxSummaryItem
                 label="Total GST Tax:"
-                value={`₹${data?.gstAmount}`}
+                value={data?.gstAmount}
                 isBold
               />
             </div>
@@ -265,9 +265,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
             />
             <TaxSummaryItem
               label="Amount:"
-              value={`₹${
-                data?.exchangeAmount === null ? 0 : data?.exchangeAmount
-              }`}
+              value={data?.exchangeAmount === null ? 0 : data?.exchangeAmount}
               isBold
             />
           </div>
@@ -276,18 +274,18 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
           <div className="p-2 text-right space-y-1">
             <TaxSummaryItem
               label="Total Amt. Before Tax:"
-              value={`₹${data?.grossAmount}`}
+              value={data?.grossAmount}
             />
             <TaxSummaryItem
               label="Additional Discount:"
-              value={`₹${data?.discount}`}
+              value={data?.discount}
             />
             <TaxSummaryItem
               label="Total Amt. After Tax:"
-              value={`₹${finalAmt}`}
+              value={finalAmt}
               isBold={true}
             />
-            <TaxSummaryItem label="Paid Amt.:" value={`₹${totalPaidAmt}`} />
+            <TaxSummaryItem label="Paid Amt.:" value={totalPaidAmt} />
           </div>
         </div>
 
@@ -295,13 +293,13 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         <div className="border-t border-black">
           {/* Amount in Word */}
           <div className="p-2 text-sm font-semibold border-b border-black">
-            Amount In Word : {`${numberToWords(totalPaidAmt)} Only`}
+            Amount In Word : {`${numberToWords(finalAmt)} Rupees Only`}
           </div>
 
           {/* Signatures */}
           <div className="grid grid-cols-2 text-xs">
             <div className="p-2 border-r border-black text-center">
-              <div className="mt-8 pt-2 border-t border-black/50 w-full">
+              <div className="mt-8 pt-2 border-t border-black w-full">
                 Customer Signature
               </div>
             </div>
@@ -314,7 +312,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         </div>
 
         {/* Thank You Note */}
-        <div className="text-center text-xs p-1 border-t border-black/50">
+        <div className="text-center text-xs p-1 border-t border-black">
           Thank You ! Visit Again.
         </div>
       </div>

@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { APiRes } from "../../types";
 import { ModalType } from "../../hooks/useModal";
 import Input from "./Input";
+import { preventkeyEnvent, preventWeelEvent } from "../../constents";
 
 interface ModalProps {
   type: ModalType | null;
@@ -121,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
       {type === "Invoice-Details" && (
         <div className="fixed z-[200] inset-0 bg-black/60 bg-opacity-75 flex items-center justify-center p-2">
           <div className="bg-primary-50 border border-primary-900 rounded-lg shadow-xl max-w-[75rem] w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+            <div className="p-3">
               {/* Header */}
               <div className="flex justify-between items-center mb-6">
                 <div>
@@ -301,7 +302,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                   </div>
 
                   {/* Payment Status */}
-                  <div className="border bg-green-50  border-primary-800 text-primary-900 mt-2 rounded-lg py-2 px-4">
+                  <div className="payment border bg-green-50  border-primary-800 text-primary-900 mt-2 rounded-lg py-2 px-4">
                     <h5 className="flex items-center justify-between font-bold text-primary-950 mb-2">
                       Payment Status
                       <p
@@ -346,7 +347,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                   </div>
                 </div>
                 <div className="">
-                  <div className="overflow-y-auto h-[484px] bg-primary-100 border border-primary-900 rounded-lg p-4">
+                  <div className="overflow-y-auto h-full bg-primary-100 border border-primary-900 rounded-lg p-2">
                     <p className="mb-3 font-bold text-primary-950">
                       Product List:
                     </p>
@@ -370,6 +371,12 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                             className="px-3 py-2 font-normal text-sm w-[8rem] text-left rtl:text-right"
                           >
                             Weight
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-3 py-2 font-normal text-sm w-[8rem] text-left rtl:text-right"
+                          >
+                            Rate
                           </th>
                           <th
                             scope="col"
@@ -409,6 +416,9 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                               </td>
                               <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
                                 {product?.weight}
+                              </td>
+                              <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
+                                {product?.rate}
                               </td>
                               <td className="px-2 py-2 text-sm font-medium whitespace-nowrap">
                                 {product?.purity === "" ||
@@ -506,9 +516,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                         <Input
                           type="date"
                           value={paymentDate}
-                          onChange={(e) =>
-                            setPaymentDate(e.target.value)
-                          }
+                          onChange={(e) => setPaymentDate(e.target.value)}
                           otherStyle="disabled:text-gray-300 disabled:border-gray-300"
                           disabled={!paymentDateCheck}
                         />
@@ -521,6 +529,8 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
                     </label>
                     <input
                       type="number"
+                      onWheel={preventWeelEvent}
+                      onKeyDown={preventkeyEnvent}
                       value={isNaN(pay) ? "" : pay}
                       min="0"
                       autoFocus={true}
