@@ -13,7 +13,6 @@ publish:
   provider: github
   owner: Nirex-mig
   repo: ReckonUp-Nextron
-  private: true
 win:
   executableName: ReckonUp
 nsis:
