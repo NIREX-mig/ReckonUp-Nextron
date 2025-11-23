@@ -8,7 +8,7 @@ const isProd = process.env.NODE_ENV === "production";
 let dbDir: string | undefined;
 
 if (isProd) {
-  dbDir = path.join(`app.getPath('userData')`, "DB");
+  dbDir = path.join(app.getPath('userData'), "DB");
 } else {
   dbDir = path.join(`${app.getPath("userData")} (development)`, "DB");
 }
