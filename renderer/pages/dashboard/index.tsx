@@ -48,8 +48,8 @@ const DashboardPage: NextPageWithLayout = () => {
     { key: "totalAmount", label: "Total" },
     { key: "totalPaid", label: "Total Paid" },
     { key: "discount", label: "Discount" },
-    { key: "status", label: "Status" },
     { key: "dueAmount", label: "Dues" },
+    { key: "status", label: "Status" },
   ];
 
   const handleSearchInvoice = (e) => {
@@ -209,7 +209,7 @@ const DashboardPage: NextPageWithLayout = () => {
               </div>
             </div>
           </div>
-          <div className="rounded-lg ">
+          {/* <div className="rounded-lg ">
             <div className="rounded-lg border border-primary-800">
               <div className="flex flex-col px-4 py-2">
                 <div className="flex items-center justify-center gap-1">
@@ -220,6 +220,21 @@ const DashboardPage: NextPageWithLayout = () => {
                 </div>
                 <p className="text-2xl font-semibold text-center text-primary-800">
                   {stats?.dueInvoices || 0}
+                </p>
+              </div>
+            </div>
+          </div> */}
+          <div className="rounded-lg ">
+            <div className="rounded-lg border border-primary-800">
+              <div className="flex flex-col px-4 py-2">
+                <div className="flex items-center justify-center gap-1">
+                  <IoMdWarning size={15} className="text-gray-800" />
+                  <h3 className="text-gray-800 text-medium font-semibold">
+                    Total Due Amount
+                  </h3>
+                </div>
+                <p className="text-2xl font-semibold text-center text-primary-800">
+                  {stats?.yearlyOutstanding || 0}
                 </p>
               </div>
             </div>

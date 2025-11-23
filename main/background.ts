@@ -1205,6 +1205,11 @@ ipcMain.on("getallinvoice", async (event, args) => {
 //tracks Event
 ipcMain.on("tracks", async (event) => {
   try {
+
+    const date = new Date();
+    const currentYear = date.getFullYear().toString();
+    const currentMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+
     // Fetch total invoices, total paid invoices, and total due invoices (where due amount > 0)
     const totalInvoicesStmt = dataDB.prepare(`
       SELECT COUNT(*) AS totalInvoices FROM invoices
@@ -1223,58 +1228,44 @@ ipcMain.on("tracks", async (event) => {
     `);
     const totalDueInvoicesResult: any = totalDueInvoicesStmt.get("Due Amount");
 
-    // // Calculate monthly outstanding amount
-    // const monthlyIncomeStmt = dataDB.prepare(`
-    //   SELECT 
-    //     strftime('%Y-%m', i.date) AS month,
-    //     SUM(i.totalAmount) AS totalInvoiceAmount,
-    //     SUM(IFNULL(p.totalPaid, 0)) AS totalPaidAmount,
-    //     SUM(i.totalAmount - IFNULL(p.totalPaid, 0)) AS outstandingAmount
-    //   FROM invoices AS i
-    //   LEFT JOIN (
-    //     SELECT 
-    //       invoiceId, 
-    //       SUM(paidAmount) AS totalPaid
-    //     FROM payments
-    //     GROUP BY invoiceId
-    //   ) AS p 
-    //   ON i.invoiceNo = p.invoiceId
-    //   GROUP BY strftime('%Y-%m', i.date)
-    //   ORDER BY month DESC;
-    // `);
-    // const monthlyIncomeResult: any = monthlyIncomeStmt.all();
+    // Calculate yearly outstanding amount (total due amount per year)
+    const yearlyOutstandingStmt = dataDB.prepare(`
+      SELECT 
+      SUM(i.dueAmount) AS yearlyOutstanding
+      FROM invoices i
+      WHERE strftime('%Y', i.createdAt) = ?;
+    `);
+    const yearlyOutstandingResult: any = yearlyOutstandingStmt.get(currentYear);
 
-    // // Calculate yearly income (total paid per year)
-    // const yearlyIncomeStmt = dataDB.prepare(`
-    //     SELECT 
-    //       strftime('%Y', i.date) AS year,
-    //       SUM(IFNULL(p.totalPaid, 0)) AS totalIncome,
-    //       SUM(i.totalAmount) AS totalInvoiceAmount,
-    //       SUM(i.totalAmount - IFNULL(p.totalPaid, 0)) AS outstandingAmount
-    //     FROM invoices AS i
-    //     LEFT JOIN (
-    //       SELECT 
-    //         invoiceId, 
-    //         SUM(paidAmount) AS totalPaid
-    //       FROM payments
-    //       GROUP BY invoiceId
-    //     ) AS p 
-    //     ON i.invoiceNo = p.invoiceId
-    //     GROUP BY strftime('%Y', i.date)
-    //     ORDER BY year DESC;
-    //   `);
-    // const yearlyIncomeResult: any = yearlyIncomeStmt.all();
+    // Calculate monthly income amount (total amount per month)
+    const monthlyIncomeStmt = dataDB.prepare(`
+      SELECT 
+      SUM(inv.totalAmount) AS monthlyIncome
+      FROM invoices inv
+      WHERE strftime('%Y', inv.createdAt) = ?
+      AND strftime('%m', inv.createdAt) = ?;
+    `);
+    const monthlyIncomeResult: any = monthlyIncomeStmt.get(currentYear, currentMonth);
+
+    // Calculate yearly income (total amount per year)
+    const yearlyIncomeStmt = dataDB.prepare(`
+      SELECT 
+      SUM(inv.totalAmount) AS yearlyIncome
+      FROM invoices inv
+      WHERE strftime('%Y', inv.createdAt) = ?;
+      `);
+    const yearlyIncomeResult: any = yearlyIncomeStmt.get(currentYear);
 
     // Preparing the summary data
     const tracksData = {
-      monthlyincome : 0,
-      yearlyIncome : 0,
-      totalInvoices : totalInvoicesResult.totalInvoices,
-      paidInvoices : totalPaidInvoicesResult.totalPaidInvoices,
-      dueInvoices : totalDueInvoicesResult.totalDueInvoices
-    } 
-    
-    
+      monthlyincome: monthlyIncomeResult.monthlyIncome || 0,
+      yearlyIncome: yearlyIncomeResult.yearlyIncome || 0,
+      yearlyOutstanding: yearlyOutstandingResult.yearlyOutstanding || 0,
+      totalInvoices: totalInvoicesResult.totalInvoices || 0,
+      paidInvoices: totalPaidInvoicesResult.totalPaidInvoices || 0,
+      dueInvoices: totalDueInvoicesResult.totalDueInvoices || 0,
+    };
+
     // create response and emmit event
     const response = new EventResponse(true, "Success", tracksData);
     event.sender.send("tracks", response);

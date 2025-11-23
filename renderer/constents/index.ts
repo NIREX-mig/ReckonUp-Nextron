@@ -23,7 +23,6 @@ export const WeeksChartLable = [
   "Sun",
 ];
 
-export const appVersion = "V1.0.0";
 export const appTitle = "ReckonUp - Devloped by NIreX";
 
 export function preventkeyEnvent(e: React.KeyboardEvent<HTMLInputElement>) {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { appVersion } from "../constents";
 
 export default function SplashScreen() {
   const [progress, setProgress] = useState(0);
@@ -33,9 +32,6 @@ export default function SplashScreen() {
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <p className=" absolute bottom-48 left-[66px] text-2xl text-white font-mono">
-        {appVersion}
-      </p>
     </div>
   );
 }
