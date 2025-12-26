@@ -25,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({ type, isOpen, onClose, modalData }) => {
   const [paymentDate, setPaymentDate] = useState("");
 
   const handlGenrateInvoice = () => {
-    router.push("/dashboard/viewInvoice/");
+    router.push("/dashboard/preview/");
   };
 
   const addPaymentAndUpdateInvoice = (modalData, paidAmount) => {

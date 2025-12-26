@@ -3,8 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { FiFileText, FiLogOut, FiSettings } from "react-icons/fi";
-import { ImStatsBars } from "react-icons/im";
-import { MdOutlinePostAdd, MdPayment } from "react-icons/md";
+import { MdOutlinePostAdd, MdPayment, MdInsights } from "react-icons/md";
 import { useRouter } from "next/router";
 import { APiRes } from "../types";
 import Button from "./ui/Button";
@@ -17,13 +16,13 @@ const SideBar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard/", icon: LuLayoutDashboard },
     {
-      name: "New Invoice",
-      path: "/dashboard/invoice/",
+      name: "Create Invoice",
+      path: "/dashboard/create/",
       icon: MdOutlinePostAdd,
     },
-    { name: "View Invoices", path: "/dashboard/search/", icon: FiFileText },
-    { name: "Due Payments", path: "/dashboard/duehistory/", icon: MdPayment },
-    { name: "Reports", path: "/dashboard/reports/", icon: ImStatsBars },
+    { name: "View Invoices", path: "/dashboard/invoices/", icon: FiFileText },
+    { name: "Due Payments", path: "/dashboard/duepayments/", icon: MdPayment },
+    { name: "Insight", path: "/dashboard/insights/", icon: MdInsights },
     { name: "Settings", path: "/dashboard/settings/", icon: FiSettings },
   ];
 
@@ -64,15 +63,15 @@ const SideBar = () => {
                 key={index}
                 href={menu.path}
                 draggable="false"
-                className={`w-full flex items-center py-2 px-3 hover:bg-primary-200 hover:rounded-lg group
+                className={`w-full flex items-center py-1.5 px-2.5 hover:bg-primary-200 hover:rounded-sm group
                 ${
                   pathname === menu.path &&
-                  "rounded-lg bg-primary-200  before:absolute before:content-[''] before:w-[3px] before:h-5 before:bg-primary-700"
+                  "rounded-sm bg-primary-200  before:absolute before:content-[''] before:w-[3px] before:h-5 before:bg-primary-700"
                 }
                 `}
               >
                 <menu.icon
-                  size={26}
+                  size={24}
                   className={`rounded-lg p-1 group-hover:text-primary-700  ${
                     pathname === menu.path && "text-primary-700"
                   }`}
@@ -93,10 +92,8 @@ const SideBar = () => {
           title="Logout"
           buttonType="button"
           handleClick={handleLogOut}
-          icon={
-            <FiLogOut size={26} className="rounded-lg p-1" />
-          }
-          extraClass=" w-[155px] border border-primary-600 hover:border-btnSecondary py-2 hover:bg-btnSecondary text-gray-600 hover:text-white text-primary-600"
+          icon={<FiLogOut size={24} className="rounded-sm p-1" />}
+          extraClass=" w-[155px] border border-primary-800 hover:border-btnSecondary py-1.5 hover:bg-btnSecondary text-gray-600 hover:text-white text-primary-800"
         />
       </div>
     </aside>

@@ -21,7 +21,7 @@ import Switch from "../../components/ui/Switch";
 import toast from "react-hot-toast";
 import { appTitle, preventkeyEnvent, preventWeelEvent } from "../../constents";
 
-const InvoicePage: NextPageWithLayout = () => {
+const CreateInvoicePage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [customerDetails, setCustomerDetails] = useState<CustomerDetails>({
@@ -207,7 +207,7 @@ const InvoicePage: NextPageWithLayout = () => {
       if (res.success) {
         toast.success(res.message);
         setTimeout(() => {
-          router.push("/dashboard/viewInvoice/");
+          router.push("/dashboard/preview/");
         }, 500);
       } else {
         toast.error(res.message);
@@ -904,8 +904,8 @@ const InvoicePage: NextPageWithLayout = () => {
   );
 };
 
-InvoicePage.getLayout = (page: ReactElement) => {
+CreateInvoicePage.getLayout = (page: ReactElement) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
-export default InvoicePage;
+export default CreateInvoicePage;

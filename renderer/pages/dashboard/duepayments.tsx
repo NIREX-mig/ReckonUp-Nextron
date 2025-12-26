@@ -25,7 +25,7 @@ interface InvoicePrameter {
   dueAmount: number;
 }
 
-const DueHistoryPage: NextPageWithLayout = () => {
+const DuepaymentsPage: NextPageWithLayout = () => {
   const currentYear = new Date().getFullYear();
   const startYear = 2023;
 
@@ -181,8 +181,8 @@ const DueHistoryPage: NextPageWithLayout = () => {
   );
 };
 
-DueHistoryPage.getLayout = (page: ReactElement) => {
+DuepaymentsPage.getLayout = (page: ReactElement) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
-export default DueHistoryPage;
+export default DuepaymentsPage;

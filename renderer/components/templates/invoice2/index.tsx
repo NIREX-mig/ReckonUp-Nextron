@@ -17,42 +17,42 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
       }`}
     >
       <span
-        className={`text-[12px] font-semibold ${
+        className={`text-xs font-semibold ${
           isBold ? "font-extrabold" : "font-semibold"
         }`}
       >
         {label}
       </span>
-      <span className={`text-[12px] ${isBold ? "font-bold" : "font-semibold"}`}>
+      <span className={`text-xs ${isBold && "font-semibold"}`}>
         {value}
       </span>
     </div>
   );
 
   return (
-    <div className=" bg-white p-4 md:p-8 flex justify-center">
+    <div className=" bg-white p-2 flex justify-center">
       {/* Main Invoice Container (A4-like constraint) */}
       <div className="w-full max-w-5xl bg-white border border-black shadow-xl">
         {/* --- Header Section --- */}
         <div className="border-b border-black">
           <div className="flex justify-between p-2">
-            <p className="text-[12px] text-start font-medium">
+            <p className="text-xs text-start font-medium">
               GSTIN#: <span className="font-semibold">{setting?.gstNo}</span>
             </p>
-            <p className="text-[12px] font-semibold text-end">
+            <p className="text-xs font-semibold text-end">
               Original/Recipt
             </p>
           </div>
 
           {/* Company Banner */}
           <div className="px-2 pb-1 grid grid-cols-4 gap-2 text-center relative">
-            <div className="col-span-1 h-[80px] -top-3 border border-black overflow-hidden">
+            <div className="col-span-1 h-[80px] -top-3 overflow-hidden">
               <Image
                 src={logo}
                 alt="Company Logo"
-                className=""
-                width={100}
-                height={100}
+                className="object-contain h-full w-full"
+                width={200}
+                height={80}
                 // onError={(e) => (e.target.style.display = "none")}
               />
             </div>
@@ -63,7 +63,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
               <p className="text-xs font-semibold mt-1 capitalize">
                 {setting?.address}
               </p>
-              <p className="text-[12px] font-semibold">
+              <p className="text-xs font-semibold">
                 Mobile No: {setting?.mobileNo} , {setting?.whatsappNo}
               </p>
             </div>
@@ -80,7 +80,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
           {/* Customer Details */}
           <div className="p-2 border-r col-span-2 border-black capitalize">
             <p className="font-semibold">
-              <span className="font-bold">Customer Name:</span> {data?.name}
+              <span className="font-semibold">Customer Name:</span> {data?.name}
             </p>
             <p className="mt-1 font-semibold">Address: {data?.address}</p>
             <p>
@@ -92,13 +92,13 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
           <div className="p-2 space-y-1">
             <div className="flex justify-between">
               <p className="flex-1 font-semibold">Date:</p>
-              <p className="font-bold">
+              <p className="font-semibold">
                 {moment(data?.createdAt).format("DD/MMM/YYYY")}
               </p>
             </div>
             <div className="flex justify-between">
               <p className="flex-1 font-semibold">Invoice No:</p>
-              <p className="font-bold">{data?.invoiceNo}</p>
+              <p className="font-semibold">{data?.invoiceNo}</p>
             </div>
           </div>
         </div>
@@ -107,12 +107,12 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         <div className="w-full">
           <table className="w-full table-fixed text-black border-collapse">
             <thead>
-              <tr className="bg-gray-50 font-semibold text-[12px] border-b border-black">
+              <tr className="bg-gray-50 font-semibold text-xs border-b border-black">
                 <th
                   rowSpan={2}
                   className="w-10 p-1 border-r border-black align-bottom"
                 >
-                  Sr. No.
+                  Sr.No.
                 </th>
                 <th
                   rowSpan={2}
@@ -127,7 +127,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                   rowSpan={2}
                   className="w-16 p-1 border-r border-black align-bottom"
                 >
-                  Purity Specs.
+                  Purity
                 </th>
                 <th
                   rowSpan={2}
@@ -163,7 +163,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                 return (
                   <tr
                     key={index}
-                    className="border-b font-semibold border-black h-8"
+                    className="border-b font-semibold border-black"
                   >
                     <td className="w-10 text-center text-xs p-1 border-r border-black">
                       {index + 1}.
@@ -182,7 +182,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                     <td className="text-right text-xs p-1 border-r border-black">
                       {product.rate}
                     </td>
-                    <td className="w-16 text-center text-[12px] p-1 border-r border-black">
+                    <td className="w-16 text-center text-xs p-1 border-r border-black">
                       {product.weight}
                     </td>
                     <td className="text-right text-xs p-1 border-r border-black">
@@ -198,8 +198,8 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
                 );
               })}
               {/* Dummy padding rows to fill space, if needed for printing format */}
-              {data?.products?.length < 6 &&
-                Array.from({ length: 6 - data?.products?.length }).map(
+              {data?.products?.length < 2 &&
+                Array.from({ length: 2 - data?.products?.length }).map(
                   (_, i) => (
                     <tr
                       key={`pad-${i}`}
@@ -236,8 +236,8 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
             </div>
 
             <div className="border-l border-black p-2">
-              <p className="text-[12px] font-semibold">CGST %: 1.5%</p>
-              <p className="text-[12px] font-semibold">SGST %: 1.5%</p>
+              <p className="text-xs font-semibold">CGST %: 1.5%</p>
+              <p className="text-xs font-semibold">SGST %: 1.5%</p>
               <TaxSummaryItem
                 label="Total GST Tax:"
                 value={data?.gstAmount}
@@ -292,7 +292,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         {/* --- Footer Section --- */}
         <div className="border-t border-black">
           {/* Amount in Word */}
-          <div className="p-2 text-sm font-semibold border-b border-black">
+          <div className="p-2 text-xs font-semibold border-b border-black">
             Amount In Word : {`${numberToWords(finalAmt)} Rupees Only`}
           </div>
 
@@ -304,7 +304,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
               </div>
             </div>
             <div className="p-2 text-center">
-              <div className="mt-8 pt-2 uppercase opacity-50 font-bold">
+              <div className="mt-8 pt-2 uppercase opacity-50 font-semibold">
                 For Shop Only
               </div>
             </div>

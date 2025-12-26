@@ -4,7 +4,7 @@ import React from "react";
 
 const Field = ({ label, value, className = "" }) => (
   <div className={`flex items-center border border-black h-8 ${className}`}>
-    <span className="text-[12px]  bg-gray-100 px-2 h-full flex items-center border-r border-black">
+    <span className="text-xs  bg-gray-100 px-2 h-full flex items-center border-r border-black">
       {label}
     </span>
     <input
@@ -35,7 +35,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
           </p>
 
           {/* Company Name & Logos */}
-          <div className="text-center px-4 pt-1 pb-2 border-t border-black relative">
+          <div className="text-center px-2 pt-1 pb-2 border-t border-black relative">
             <div className="flex justify-center items-center">
               <Image
                 src={logo}
@@ -177,8 +177,8 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                 );
               })}
               {/* Dummy padding rows to fill space, if needed for printing format */}
-              {data?.products?.length < 6 &&
-                Array.from({ length: 6 - data?.products?.length }).map(
+              {data?.products?.length < 2 &&
+                Array.from({ length: 2 - data?.products?.length }).map(
                   (_, i) => (
                     <tr key={`pad-${i}`} className="h-6">
                       <td className="border-r border-black"></td>
@@ -240,15 +240,15 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
           <div className="col-span-2">
             <div className="p-1 space-y-0.5">
               <div className="flex justify-between border-b border-black">
-                <span className="text-[12px] font-semibold">Sub. Total</span>
+                <span className="text-xs font-semibold">Sub. Total</span>
                 <span className="font-semibold">{data?.grossAmount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px] font-semibold">{`Gst Amt. (${data?.gstPercentage}%)`}</span>
+                <span className="text-xs font-semibold">{`Gst Amt. (${data?.gstPercentage}%)`}</span>
                 <span className="font-semibold">{data?.gstAmount}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px] font-semibold">
+                <span className="text-xs font-semibold">
                   Additional Discount:
                 </span>
                 <span className="font-semibold">{data?.discount}</span>
@@ -258,7 +258,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                 <span className="text-xs">{finalAmt}</span>
               </div>
               <div className="flex justify-between border-t border-black pt-0.5">
-                <span className="text-[12px] font-bold">Payment Received</span>
+                <span className="text-xs font-bold">Payment Received</span>
                 <span className="font-semibold">{totalPaidAmt}</span>
               </div>
             </div>

@@ -15,7 +15,7 @@ import Button from "../../components/ui/Button";
 import { appTitle } from "../../constents";
 import Invoice4 from "../../components/templates/invoice4";
 
-const ViewInvoicePage: NextPageWithLayout = () => {
+const PreviewPage: NextPageWithLayout = () => {
   const [finalInvoiceData, setFinalInvoiceData] = useState(undefined);
   const [setting, setSetting] = useState(undefined);
   const contentRef = useRef();
@@ -175,8 +175,8 @@ const ViewInvoicePage: NextPageWithLayout = () => {
   );
 };
 
-ViewInvoicePage.getLayout = (page: ReactElement) => {
+PreviewPage.getLayout = (page: ReactElement) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
-export default ViewInvoicePage;
+export default PreviewPage;

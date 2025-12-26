@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import numberToWords from "../../../constents/numbertoword";
@@ -8,7 +8,7 @@ import Image from "next/image";
 // Helper component for the complex item table
 const ItemTable = ({ items }) => {
   const cellStyle = "p-1 text-xs border-r border-black h-6";
-  const headerStyle = "p-1 text-[10px] font-bold border-r border-black";
+  const headerStyle = "p-1 text-xs font-bold border-r border-black";
 
   return (
     <div className="w-full border-t border-b border-black mt-2">
@@ -57,8 +57,8 @@ const ItemTable = ({ items }) => {
       ))}
 
       {/* Filler Space (to simulate blank lines) */}
-      {items?.length < 6 &&
-        Array.from({ length: 6 - items?.length }).map((_, i) => (
+      {items?.length < 2 &&
+        Array.from({ length: 2 - items?.length }).map((_, i) => (
           <div key={`filler-${i}`} className="flex">
             <div className={`${cellStyle} w-[3%]`}></div>
             <div className={`${cellStyle} w-[20%]`}></div>
@@ -96,7 +96,7 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
               <Image src={logo} alt="Company Logo" width={100} height={100} className="absolute" />
               <div className="w-1/3"></div>
 
-            <div className="text-4xl font-extrabold text-red-900 tracking-wider uppercase">
+            <div className="text-2xl font-extrabold text-red-900 tracking-wider uppercase">
               {setting?.shopName}
             </div>
 
@@ -108,10 +108,10 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
 
           {/* 3. Hallmark, Subtitle, Address, and Mobile */}
           <div className="flex justify-evenly mt-2">
-            <div className="font-bold text-[12px] text-gray-700 p-0.5 px-10 border border-black">
+            <div className="font-bold text-xs text-gray-700 p-0.5 px-10 border border-black">
               91.6 Hallmark Showroom
             </div>
-            <div className="font-bold text-[12px] text-gray-700 p-0.5 px-10 border border-black">
+            <div className="font-bold text-xs text-gray-700 p-0.5 px-10 border border-black">
               Gold & Silver Ornament Traders
             </div>
           </div>
@@ -246,12 +246,12 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
 
           {/* Right Column: Declaration and Signatures */}
           <div className="w-1/2 border border-black p-2 ml-2 flex flex-col justify-between text-gray-500">
-            <div className="flex justify-between items-end mt-12 text-sm font-semibold">
+            <div className="flex justify-between items-end mt-12 text-xs font-semibold">
               <div className="text-center">For,</div>
               <div className="text-center">Jewellers</div>
             </div>
 
-            <div className="text-right text-[10px] text-gray-500 pt-4 border-t border-dotted border-black">
+            <div className="text-right text-[10px] text-gray-500 pt-2 border-t border-dotted border-black">
               (Authorised Signatory)
             </div>
           </div>

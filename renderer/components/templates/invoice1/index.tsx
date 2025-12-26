@@ -23,7 +23,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
 
   return (
     <div className="bg-white p-1 font-semibold flex justify-center">
-      <div className="w-full max-w-5xl bg-white border border-black p-4">
+      <div className="w-full max-w-5xl bg-white border border-black p-2">
         <div className=" flex justify-between  text-center border-b border-black mb-2">
           <p className="text-xs text-start">
             GSTIN#: <span className="font-semibold">{setting?.gstNo}</span>
@@ -32,7 +32,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Company Info and ST Code --- */}
-        <div className="flex items-start mb-4">
+        <div className="flex items-start mb-2">
           <div className="w-24 h-24 overflow-hidden">
             {/* Logo area */}
             <img
@@ -43,7 +43,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
           </div>
           <div className="flex-grow">
             <div className="text-center">
-              <h2 className="text-3xl font-extrabold text-[#964B00] capitalize">
+              <h2 className="text-2xl font-extrabold text-[#964B00] capitalize">
                 {setting?.shopName}
               </h2>
               <p className="text-xs mt-1">{setting?.address}</p>
@@ -57,7 +57,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
 
         {/* --- Customer and Invoice Details Block --- */}
         <div className="grid grid-cols-3  text-xs border border-black mb-2">
-          <div className="p-2 col-span-2 border-r border-black capitalize">
+          <div className="p-1 col-span-2 border-r border-black capitalize">
             <p className="font-bold">
               <span className="">Customer Name:</span> {data?.name}
             </p>
@@ -68,7 +68,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
               <span className="font-semibold">Mobile#:</span> {data?.phone}
             </p>
           </div>
-          <div className="p-2">
+          <div className="p-1">
             <div className="flex justify-between">
               <p className="flex-1">Date:</p>
               <p className="font-bold">
@@ -83,7 +83,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Itemized Table --- */}
-        <div className="border border-black min-h-60">
+        <div className="border border-black">
           {/* Table Header */}
           <table className="w-full table-fixed text-black border-collapse">
             <thead>
@@ -92,7 +92,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
                   rowSpan={2}
                   className="w-10 p-1 border-r border-black text-left"
                 >
-                  Sr. No.
+                  Sr.No.
                 </th>
 
                 <th
@@ -107,7 +107,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
                   Category
                 </th>
                 <th rowSpan={2} className="w-16 p-1 border-r border-black">
-                  Purity.
+                  Purity
                 </th>
                 <th rowSpan={2} className="p-1 border-r border-black">
                   Rate/Gm
@@ -164,8 +164,8 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
                 );
               })}
               {/* Dummy padding rows to fill space, if needed for printing format */}
-              {data?.products?.length < 6 &&
-                Array.from({ length: 6 - data?.products?.length }).map(
+              {data?.products?.length < 2 &&
+                Array.from({ length: 2 - data?.products?.length }).map(
                   (_, i) => (
                     <tr
                       key={`pad-${i}`}
@@ -243,9 +243,9 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Footer Section --- */}
-        <div className="border border-black mt-4">
+        <div className="border border-black mt-2">
           {/* Amount in Word */}
-          <div className="p-2 text-sm font-semibold border-b border-black">
+          <div className="p-2 text-xs font-semibold border-b border-black">
             Amount In Word : {`${numberToWords(finalAmt)} Rupees Only`}
           </div>
 
@@ -269,10 +269,10 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* Thank You Note */}
-        <div className="text-center text-xs mt-4">Thank You ! Visit Again.</div>
+        <div className="text-center text-xs mt-2">Thank You ! Visit Again.</div>
       </div>
     </div>
   );
 };
-
+    
 export default Invoice1;

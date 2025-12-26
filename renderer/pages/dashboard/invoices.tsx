@@ -24,7 +24,7 @@ interface InvoicePrameter {
   status: string;
 }
 
-const SearchPage: NextPageWithLayout = () => {
+const InvoicesPage: NextPageWithLayout = () => {
   const { modal, openModal, closeModal } = useModal();
 
   const [currentPage, setCurrentPage] = useState(undefined);
@@ -144,8 +144,8 @@ const SearchPage: NextPageWithLayout = () => {
   );
 };
 
-SearchPage.getLayout = (page: ReactElement) => {
+InvoicesPage.getLayout = (page: ReactElement) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
-export default SearchPage;
+export default InvoicesPage;

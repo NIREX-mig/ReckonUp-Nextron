@@ -13,7 +13,7 @@ import { APiRes } from "../../types";
 import ProgressLevel from "../../components/reports/ProgressLevel";
 import { appTitle } from "../../constents";
 
-const reports: NextPageWithLayout = () => {
+const InsightsPages: NextPageWithLayout = () => {
   const currentYear = new Date().getFullYear();
   const startYear = 2023;
 
@@ -200,8 +200,8 @@ const reports: NextPageWithLayout = () => {
   );
 };
 
-reports.getLayout = (page: ReactElement) => {
+InsightsPages.getLayout = (page: ReactElement) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
-export default reports;
+export default InsightsPages;
