@@ -22,17 +22,17 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
   );
 
   return (
-    <div className="bg-white p-1 font-semibold flex justify-center">
-      <div className="w-full max-w-5xl bg-white border border-black p-2">
-        <div className=" flex justify-between  text-center border-b border-black mb-2">
+    <div className="bg-white font-semibold flex justify-center">
+      <div className="w-full max-w-5xl bg-white border border-black p-1">
+        <div className=" flex justify-between  text-center border-b border-black mb-1">
           <p className="text-xs text-start">
-            GSTIN#: <span className="font-semibold">{setting?.gstNo}</span>
+            GSTIN#: <span className="font-semibold">{setting?.gstNo || "N/A"}</span>
           </p>
           <p className="text-end text-xs mb-1">Original/Recepient</p>
         </div>
 
         {/* --- Company Info and ST Code --- */}
-        <div className="flex items-start mb-2">
+        <div className="flex items-start mb-1">
           <div className="w-24 h-24 overflow-hidden">
             {/* Logo area */}
             <img
@@ -56,7 +56,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Customer and Invoice Details Block --- */}
-        <div className="grid grid-cols-3  text-xs border border-black mb-2">
+        <div className="grid grid-cols-3  text-xs border border-black mb-0.5">
           <div className="p-1 col-span-2 border-r border-black capitalize">
             <p className="font-bold">
               <span className="">Customer Name:</span> {data?.name}
@@ -65,7 +65,7 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
               <span className="font-semibold">Address: {data?.address}</span>
             </p>
             <p className="mt-1">
-              <span className="font-semibold">Mobile#:</span> {data?.phone}
+              <span className="font-semibold">Mobile#:</span> {data?.phone || "N/A"}
             </p>
           </div>
           <div className="p-1">
@@ -243,15 +243,15 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Footer Section --- */}
-        <div className="border border-black mt-2">
+        <div className="border border-black mt-0.5">
           {/* Amount in Word */}
-          <div className="p-2 text-xs font-semibold border-b border-black">
+          <div className="p-1 text-xs font-semibold border-b border-black">
             Amount In Word : {`${numberToWords(finalAmt)} Rupees Only`}
           </div>
 
           {/* Signatures */}
           <div className="grid grid-cols-2 text-xs">
-            <div className="p-2 border-r border-black text-center">
+            <div className="p-0.5 border-r border-black text-center">
               <div className="flex justify-center items-center">
                 <Image
                   src={qr}
@@ -262,14 +262,14 @@ const Invoice1 = ({ data, qr, logo, setting }) => {
                 />
               </div>
             </div>
-            <div className="p-2 text-center">
+            <div className="p-0.5 text-center">
               <p className="mt-8 pt-2 font-bold opacity-50">For Shop Only</p>
             </div>
           </div>
         </div>
 
         {/* Thank You Note */}
-        <div className="text-center text-xs mt-2">Thank You ! Visit Again.</div>
+        <div className="text-center text-xs mt-0.5">Thank You ! Visit Again.</div>
       </div>
     </div>
   );

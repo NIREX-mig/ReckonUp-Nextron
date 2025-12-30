@@ -37,7 +37,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
         <div className="border-b border-black">
           <div className="flex justify-between p-2">
             <p className="text-xs text-start font-medium">
-              GSTIN#: <span className="font-semibold">{setting?.gstNo}</span>
+              GSTIN#: <span className="font-semibold">{setting?.gstNo || "N/A"}</span>
             </p>
             <p className="text-xs font-semibold text-end">
               Original/Recipt
@@ -84,7 +84,7 @@ const Invoice2 = ({ data, qr, logo, setting, showGst = false }) => {
             </p>
             <p className="mt-1 font-semibold">Address: {data?.address}</p>
             <p>
-              <span className="font-semibold">Mobile#:</span> {data?.phone}
+              <span className="font-semibold">Mobile#:</span> {data?.phone || "N/A"}
             </p>
           </div>
 

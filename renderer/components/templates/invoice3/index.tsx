@@ -3,17 +3,12 @@ import Image from "next/image";
 import React from "react";
 
 const Field = ({ label, value, className = "" }) => (
-  <div className={`flex items-center border border-black h-8 ${className}`}>
-    <span className="text-xs  bg-gray-100 px-2 h-full flex items-center border-r border-black">
+  <div className={`flex text-semibold items-center ${className}`}>
+    <span className="text-xs bg-gray-100 px-2 h-full flex items-center border-r border-black">
       {label}
     </span>
-    <input
-      type="text"
-      value={value}
-      readOnly
-      className="flex-grow p-1 text-xs focus:outline-none bg-white"
-      placeholder="N/A or fillable field"
-    />
+
+    <span className="text-xs px-2 py-1">{value}</span>
   </div>
 );
 
@@ -25,24 +20,24 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
   );
 
   return (
-    <div className="bg-white p-1 flex justify-center">
+    <div className="bg-white flex justify-center font-semibold">
       {/* Main Invoice Container (Print Layout) */}
-      <div className="w-full max-w-5xl bg-white border-2 border-black text-black">
+      <div className="w-full max-w-5xl bg-white border border-black text-black">
         {/* --- Header Section --- */}
         <div className="border-b border-black">
-          <p className="text-xs text-start p-1">
-            GSTIN#: <span className="font-semibold">{setting?.gstNo}</span>
+          <p className="text-xs text-start p-0.5">
+            GSTIN#: <span className="font-semibold">{setting?.gstNo || "N/A"}</span>
           </p>
 
           {/* Company Name & Logos */}
-          <div className="text-center px-2 pt-1 pb-2 border-t border-black relative">
+          <div className="text-center px-2 pb-1 border-t border-black relative">
             <div className="flex justify-center items-center">
               <Image
                 src={logo}
                 alt="Logo"
                 width={100}
                 height={100}
-                className="absolute left-14 top-2 h-[100px] w-[100px]"
+                className="absolute left-14 top-1 h-[100px] w-[100px]"
               />
               <div>
                 <span className="text-xs font-bold border border-black px-2 tracking-widest">
@@ -52,8 +47,8 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                   {setting?.shopName}
                 </h1>
                 <p className="text-xs font-semibold mt-[-2px] capitalize">{`Prop: ${setting?.ownerName}`}</p>
-                <p className="text-[10px] font-medium">{setting?.address}</p>
-                <p className="text-xs">
+                <p className="text-xs font-medium">{setting?.address}</p>
+                <p className="text-xs font-semibold">
                   Mobile No: {setting?.mobileNo} , {setting?.whatsappNo}
                 </p>
               </div>
@@ -62,50 +57,64 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
         </div>
 
         {/* --- Key Detail Fields (Row 1) --- */}
-        <div className="grid grid-cols-2 text-xs px-1">
+        <div className="grid grid-cols-2 text-xs">
+          <Field
+            label="Name :"
+            value={data?.name}
+            className="border-t-0 border-l-0 border-b border-r border-black capitalize"
+          />
           <Field
             label="Invoice No. :"
             value={data?.invoiceNo}
-            className="border-t-0"
+            className="border-t-0 border-l-0 border-b border-black"
+            />
+        </div>
+        
+        <div className="grid grid-cols-2 text-xs">
+          <Field
+            label="Address :"
+            value={data?.address}
+            className="border-t-0 border-l-0 border-b border-r border-black capitalize"
           />
           <Field
-            label="Date"
+            label="Data :"
             value={moment(data?.createdAt).format("DD/MMM/YYYY")}
-            className="border-t-0 border-l-0"
+            className="border-t-0 border-l-0 border-b border-black"
+            />
+        </div>
+
+        <div className="grid grid-cols-2 text-xs">
+          <Field
+            label="Mobile NO. :"
+            value={data?.phone || "N/A"}
+            className="border-t-0 border-l-0 border-b border-r border-black capitalize"
           />
+          <Field
+            label=""
+            value=""
+            className="border-t-0 border-l-0 border-b border-black"
+            />
         </div>
 
         {/* --- Customer and Address Fields --- */}
-        <div className="p-1 border-b border-black space-y-1">
-          <Field
-            label="Name:"
-            value={data?.name}
-            className="h-6 border-black"
-          />
+        {/* <div className="border-black">
+            <Field label="Address:" value={data?.address} className="" />
           <div className="flex ">
-            <Field
-              label="Address:"
-              value={data?.address}
-              className="h-6 w-[50%] border-black"
-            />
-            <Field
-              label="Address:"
-              value={data?.phone}
-              className="h-6 w-[50%] border-black"
-            />
+          <Field label="Name:" value={data?.name} className="" />
+            <Field label="Address:" value={data?.phone} className="" />
           </div>
-        </div>
+        </div> */}
 
         {/* --- Itemized Table Header --- */}
-        <div className="font-bold border-b border-black">
-          <table className="w-full table-fixed text-black border-collapse h-8">
+        <div className="font-bold border-x-0 border-b  border-black">
+          <table className="w-full table-fixed text-black border-collapse">
             <thead>
               <tr className="bg-gray-100 font-semibold text-xs border-b border-black">
                 <th
                   rowSpan={2}
                   className="w-10 p-1 border-r border-black text-left"
                 >
-                  Sr. No.
+                  Sr.No.
                 </th>
 
                 <th
@@ -180,7 +189,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
               {data?.products?.length < 2 &&
                 Array.from({ length: 2 - data?.products?.length }).map(
                   (_, i) => (
-                    <tr key={`pad-${i}`} className="h-6">
+                    <tr key={`pad-${i}`} className="h-7">
                       <td className="border-r border-black"></td>
                       <td className="border-r border-black"></td>
                       <td className="border-r border-black"></td>
@@ -210,7 +219,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                 className="w-[100px] h-[100px]"
               />
             </div>
-            <div className="border-l border-black p-2">
+            <div className="border-l border-black p-1">
               <div className="flex justify-between">
                 <span className="font-semibold">Category:</span>
                 <span className="font-semibold">
@@ -219,7 +228,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                     : data?.exchangeCategory}
                 </span>
               </div>
-              <div className="flex justify-between mt-3">
+              <div className="flex justify-between mt-0.5">
                 <span className="font-semibold">Weight:</span>
                 <span className="font-semibold">
                   {data?.exchangePercentage === null
@@ -227,7 +236,7 @@ const Invoice3 = ({ data, qr, logo, setting }) => {
                     : data?.exchangePercentage}
                 </span>
               </div>
-              <div className="flex justify-between mt-3">
+              <div className="flex justify-between mt-0.5">
                 <span className="font-semibold">Amount:</span>
                 <span className="font-semibold">
                   {data?.exchangeAmount === null ? 0 : data?.exchangeAmount}

@@ -11,7 +11,7 @@ const ItemTable = ({ items }) => {
   const headerStyle = "p-1 text-xs font-bold border-r border-black";
 
   return (
-    <div className="w-full border-t border-b border-black mt-2">
+    <div className="w-full border-t border-b border-black">
       {/* Table Header Row */}
       <div className="flex text-center border-b border-black">
         <div className={`${headerStyle} w-[3%]`}>Sr</div>
@@ -83,20 +83,28 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
   );
   return (
     <div className=" bg-white">
-      <div className="border border-black p-3">
-        <h1 className="text-xs text-center font-semibold block pb-2 underline">
-          GOLD TAX INVOICE
-        </h1>
-        {/* <div className="p-1 font-semibold border-r border-gray-700 w-1/4 text-center">
-          GSTIN: {data.header.gstin}
-        </div> */}
+      <div className="border border-black p-1">
+        <div className="grid grid-cols-3 text-center">
+          <p className="font-semibold text-xs w-1/4">
+            GSTIN: {setting?.gstNo || "N/A"}
+          </p>
+          <h1 className="text-xs font-semibold block pb-1 underline">
+            GOLD TAX INVOICE
+          </h1>
+        </div>
 
-        <div className="border border-black p-2 rounded-lg">
+        <div className="border border-black p-1.5 rounded-lg">
           <div className="flex items-start justify-between relative">
-              <Image src={logo} alt="Company Logo" width={100} height={100} className="absolute" />
-              <div className="w-1/3"></div>
+            <Image
+              src={logo}
+              alt="Company Logo"
+              width={100}
+              height={100}
+              className="absolute"
+            />
+            <div className="w-1/3"></div>
 
-            <div className="text-2xl font-extrabold text-red-900 tracking-wider uppercase">
+            <div className="text-3xl font-extrabold text-red-900 tracking-wider uppercase">
               {setting?.shopName}
             </div>
 
@@ -107,16 +115,16 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
           </div>
 
           {/* 3. Hallmark, Subtitle, Address, and Mobile */}
-          <div className="flex justify-evenly mt-2">
-            <div className="font-bold text-xs text-gray-700 p-0.5 px-10 border border-black">
+          <div className="flex justify-evenly">
+            <div className="font-bold text-xs text-gray-700 p-0.5 px-5 border border-black">
               91.6 Hallmark Showroom
             </div>
-            <div className="font-bold text-xs text-gray-700 p-0.5 px-10 border border-black">
+            <div className="font-bold text-xs text-gray-700 p-0.5 px-5 border border-black">
               Gold & Silver Ornament Traders
             </div>
           </div>
 
-          <div className="text-center text-xs font-bold mt-2 capitalize">
+          <div className="text-center text-xs font-bold mt-1 capitalize">
             <FaLocationDot size={15} className="inline-block mr-1" />
             <span>{setting?.address}</span>
           </div>
@@ -128,7 +136,7 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 text-xs mb-2 mt-2">
+        <div className="grid grid-cols-2 gap-x-6 text-xs mb-1 mt-1">
           <div className="col-span-1 border border-black p-2 rounded-lg bg-gray-50">
             <p className="font-bold mb-1">Details of Receiver (Billed To)</p>
             <p>
@@ -164,7 +172,7 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
         <div className="flex text-xs">
           <div className="w-1/2 border-b border-r border-l border-black flex flex-col justify-between">
             <div className="grid grid-cols-2 h-full border-b border-black">
-              <div className="border-r border-black p-2">
+              <div className="border-r border-black p-1">
                 <div className="flex justify-between">
                   <span className="font-semibold">Category:</span>
                   <span className="font-semibold">
@@ -173,7 +181,7 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
                       : data?.exchangeCategory}
                   </span>
                 </div>
-                <div className="flex justify-between mt-3">
+                <div className="flex justify-between">
                   <span className="font-semibold">Weight:</span>
                   <span className="font-semibold">
                     {data?.exchangePercentage === null
@@ -181,14 +189,14 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
                       : data?.exchangePercentage}
                   </span>
                 </div>
-                <div className="flex justify-between mt-3">
+                <div className="flex justify-between">
                   <span className="font-semibold">Amount:</span>
                   <span className="font-semibold">
                     {data?.exchangeAmount === null ? 0 : data?.exchangeAmount}
                   </span>
                 </div>
               </div>
-              <div className="p-2">
+              <div className="p-1">
                 <p>CGST @ {data?.totals?.cgstRate.toFixed(1)}%:</p>
                 <p>SGST @ {data?.totals?.sgstRate.toFixed(1)}%:</p>
                 <p className="font-bold">
@@ -199,7 +207,9 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
             {/* Amount in Words */}
             <div className="p-1 font-semibold">
               In Words:{" "}
-              <span className="italic">{`${numberToWords(finalAmt)} Rupees Only`}</span>
+              <span className="italic">{`${numberToWords(
+                finalAmt
+              )} Rupees Only`}</span>
             </div>
           </div>
 
@@ -215,40 +225,32 @@ const Invoice4 = ({ data, qr, logo, setting }) => {
             </div>
             <div className="grid grid-cols-4 border-b border-black">
               <div className="col-span-2 p-1 text-left">
-                 Additional Discount:
+                Additional Discount:
               </div>
-              <div className="col-span-2 p-1">
-                {data?.discount}
-              </div>
+              <div className="col-span-2 p-1">{data?.discount}</div>
             </div>
             <div className="grid grid-cols-4 border-b border-black">
               <div className="col-span-2 p-1 text-left">
-                 Total Amt. After Tax:
+                Total Amt. After Tax:
               </div>
-              <div className="col-span-2 p-1">
-                {finalAmt}
-              </div>
+              <div className="col-span-2 p-1">{finalAmt}</div>
             </div>
             <div className="grid grid-cols-4 bg-yellow-100 font-bold">
-              <div className="col-span-2 p-1 text-left">
-                 Paid Amount:
-              </div>
-              <div className="col-span-2 p-1">
-               {totalPaidAmt}
-              </div>
+              <div className="col-span-2 p-1 text-left">Paid Amount:</div>
+              <div className="col-span-2 p-1">{totalPaidAmt}</div>
             </div>
           </div>
         </div>
 
-        <div className="flex mt-2 text-xs">
+        <div className="flex text-xs">
           {/* Left Column: Terms and Bank Details */}
-          <div className="w-1/2 pr-2"></div>
+          <div className="w-1/2"></div>
 
           {/* Right Column: Declaration and Signatures */}
-          <div className="w-1/2 border border-black p-2 ml-2 flex flex-col justify-between text-gray-500">
-            <div className="flex justify-between items-end mt-12 text-xs font-semibold">
-              <div className="text-center">For,</div>
-              <div className="text-center">Jewellers</div>
+          <div className="w-1/2 border border-black flex flex-col justify-between text-gray-500">
+            <div className="flex justify-between items-end mt-10 text-xs font-semibold">
+              <div className="text-center ml-2">For,</div>
+              <div className="text-center mr-2">Jewellers</div>
             </div>
 
             <div className="text-right text-[10px] text-gray-500 pt-2 border-t border-dotted border-black">
